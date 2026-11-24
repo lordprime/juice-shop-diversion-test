@@ -3,8 +3,9 @@ import { readFile } from 'node:fs/promises'
 import { safeLoad } from 'js-yaml'
 import logger from '../lib/logger'
 
-export async function loadStaticData (file: string) {
-  const filePath = path.resolve('./data/static/' + file + '.yml')
+// YAML files by default; JSON parses the same way, so the content pack uses it too.
+export async function loadStaticData (file: string, extension: 'yml' | 'json' = 'yml') {
+  const filePath = path.resolve('./data/static/' + file + '.' + extension)
   return await readFile(filePath, 'utf8')
     .then(safeLoad)
     .catch(() => logger.error('Could not open file: "' + filePath + '"'))
@@ -66,6 +67,18 @@ export interface StaticDelivery {
 }
 export async function loadStaticDeliveryData (): Promise<StaticDelivery[]> {
   return await loadStaticData('deliveries') as StaticDelivery[]
+}
+
+// The seeded content pack, built by scripts/catalog/generate.mjs. Reviews point
+// at products and customers by their position in the pack.
+export interface StaticCatalog {
+  seed: number
+  products: Array<{ name: string, description: string, price: number, deluxePrice: number, image: string, quantity: number }>
+  users: Array<{ email: string, username: string, role: 'customer' | 'deluxe' }>
+  reviews: Array<{ product: number, author: number, message: string }>
+}
+export async function loadStaticCatalogData (): Promise<StaticCatalog> {
+  return await loadStaticData('catalog', 'json') as StaticCatalog
 }
 
 export interface StaticSecurityQuestions {

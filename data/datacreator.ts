@@ -25,7 +25,7 @@ import config from 'config'
 import fs from 'node:fs'
 import * as utils from '../lib/utils'
 import type { StaticUser, StaticUserAddress, StaticUserCard } from './staticData'
-import { loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
+import { loadStaticCatalogData, loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
 import { ordersCollection, reviewsCollection } from './mongodb'
 import * as datacache from './datacache'
 import * as security from '../lib/insecurity'
@@ -38,6 +38,7 @@ export default async () => {
     createUsers,
     createRandomFakeUsers,
     createProducts,
+    createCatalog,
     createBaskets,
     createBasketItems,
     createAnonymousFeedback,
@@ -364,6 +365,41 @@ async function createProducts () {
           )
     )
   )
+}
+
+// The seeded content pack: more customers, products and reviews. Created one
+// after another so the database ids follow the pack's order. The customers get
+// random passwords nobody knows; they exist to be seen, not to log in.
+async function createCatalog () {
+  const pack = await loadStaticCatalogData()
+  const customers: UserModel[] = []
+  for (const { email, username, role } of pack.users) {
+    const user = await UserModel.create({
+      email,
+      username,
+      role,
+      password: utils.randomHexString(32),
+      deluxeToken: role === security.roles.deluxe ? security.deluxeToken(email) : '',
+      profileImage: 'assets/public/images/uploads/default.svg'
+    })
+    await WalletModel.create({ UserId: user.id, balance: 0 })
+    customers.push(user)
+  }
+  const products: ProductModel[] = []
+  for (const { name, description, price, deluxePrice, image, quantity } of pack.products) {
+    const product = await ProductModel.create({ name, description, price, deluxePrice, image })
+    await QuantityModel.create({ ProductId: product.id, quantity, limitPerUser: null })
+    products.push(product)
+  }
+  for (const { product, author, message } of pack.reviews) {
+    await reviewsCollection.insert({
+      message,
+      author: customers[author].email,
+      product: products[product].id,
+      likesCount: 0,
+      likedBy: []
+    })
+  }
 }
 
 async function createBaskets () {
