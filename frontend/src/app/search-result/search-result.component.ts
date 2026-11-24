@@ -56,7 +56,6 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
   private resizeObserver?: ResizeObserver
   public emptyState = false
 
-  // vuln-code-snippet start restfulXssChallenge
   ngAfterViewInit () {
     const products = this.productService.search('')
     const quantities = this.quantityService.getAll()
@@ -64,7 +63,7 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
       next: ([quantities, products]) => {
         const dataTable: ProductTableEntry[] = []
         this.tableData = products
-        this.trustProductDescription(products) // vuln-code-snippet neutral-line restfulXssChallenge
+        this.trustProductDescription(products)
         for (const product of products) {
           dataTable.push({
             name: product.name,
@@ -102,13 +101,12 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
     })
   }
 
-  trustProductDescription (tableData: any[]) { // vuln-code-snippet neutral-line restfulXssChallenge
-    for (let i = 0; i < tableData.length; i++) { // vuln-code-snippet neutral-line restfulXssChallenge
-      tableData[i].description = this.sanitizer.bypassSecurityTrustHtml(tableData[i].description) // vuln-code-snippet vuln-line restfulXssChallenge
-    } // vuln-code-snippet neutral-line restfulXssChallenge
-  } // vuln-code-snippet neutral-line restfulXssChallenge
+  trustProductDescription (tableData: any[]) {
+    for (let i = 0; i < tableData.length; i++) {
+      tableData[i].description = this.sanitizer.bypassSecurityTrustHtml(tableData[i].description)
+    }
+  }
 
-  // vuln-code-snippet end restfulXssChallenge
 
   ngOnDestroy () {
     if (this.routerSubscription) {
@@ -128,13 +126,12 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  // vuln-code-snippet start localXssChallenge xssBonusChallenge
   filterTable () {
     let queryParam: string = this.route.snapshot.queryParams.q
     if (queryParam) {
       queryParam = queryParam.trim()
       this.dataSource.filter = queryParam.toLowerCase()
-      this.searchValue = this.sanitizer.bypassSecurityTrustHtml(queryParam) // vuln-code-snippet vuln-line localXssChallenge xssBonusChallenge
+      this.searchValue = this.sanitizer.bypassSecurityTrustHtml(queryParam)
       if (this.gridDataSourceSubscription) {
         this.gridDataSourceSubscription.unsubscribe()
       }
@@ -151,7 +148,6 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
       this.emptyState = false
     }
   }
-  // vuln-code-snippet end localXssChallenge xssBonusChallenge
 
   private setupResponsivePageSize () {
     const grid = this.elRef.nativeElement.querySelector('.products-grid')
