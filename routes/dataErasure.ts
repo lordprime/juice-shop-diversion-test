@@ -63,7 +63,6 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
 })
 
 interface DataErasureRequestParams {
-  layout?: string
   email: string
   securityAnswer: string
 }
@@ -97,11 +96,9 @@ router.post('/', (req: Request<Record<string, unknown>, Record<string, unknown>,
         _logo_: utils.extractFilename(config.get('application.logo'))
       }
 
-      const { layout, ...fields } = req.body
-      res.render('dataErasureResult', {
-        ...fields,
-        ...themeVars
-      })
+      // the result page needs only the theme; nothing from the request reaches
+      // the view engine, so no caller-chosen layout, views or settings
+      res.render('dataErasureResult', themeVars)
     } catch (error) {
       next(error)
     }
