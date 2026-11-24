@@ -8,7 +8,6 @@ import { FeedbackDetailsComponent } from '../feedback-details/feedback-details.c
 
 import { FeedbackService } from '../Services/feedback.service'
 import { UserService } from '../Services/user.service'
-import { CookieService } from 'ngy-cookie'
 import { type ComponentFixture, TestBed } from '@angular/core/testing'
 
 import { AdministrationComponent } from './administration.component'
@@ -30,7 +29,6 @@ describe('AdministrationComponent', () => {
     let dialog: any
     let userService: any
     let feedbackService: any
-    let cookieService: any
 
     beforeEach(async () => {
         dialog = {
@@ -47,11 +45,6 @@ describe('AdministrationComponent', () => {
         }
         feedbackService.find.mockReturnValue(of([{ comment: 'Feedback1' }, { comment: 'Feedback2' }]))
         feedbackService.del.mockReturnValue(of(null))
-        cookieService = {
-            get: vi.fn().mockName("CookieService.get"),
-            put: vi.fn().mockName("CookieService.put")
-        }
-        cookieService.get.mockReturnValue('false')
 
         TestBed.configureTestingModule({
             imports: [MatTableModule,
@@ -66,7 +59,6 @@ describe('AdministrationComponent', () => {
                 { provide: MatDialog, useValue: dialog },
                 { provide: UserService, useValue: userService },
                 { provide: FeedbackService, useValue: feedbackService },
-                { provide: CookieService, useValue: cookieService },
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting()
             ]
@@ -152,25 +144,5 @@ describe('AdministrationComponent', () => {
         expect(component.feedbackColumns[1]).toBe('comment')
         expect(component.feedbackColumns[2]).toBe('rating')
         expect(component.feedbackColumns[3]).toBe('remove')
-    })
-
-    it('should initialize showToolCalls based on cookie', () => {
-        cookieService.get.mockReturnValue('true')
-        component.ngOnInit()
-        expect(component.showToolCalls()).toBe(true)
-
-        cookieService.get.mockReturnValue('false')
-        component.ngOnInit()
-        expect(component.showToolCalls()).toBe(false)
-    })
-
-    it('should toggle showToolCalls and update cookie', () => {
-        component.toggleShowToolCalls({ checked: true })
-        expect(component.showToolCalls()).toBe(true)
-        expect(cookieService.put).toHaveBeenCalledWith('show_tool_calls', 'true', expect.any(Object))
-
-        component.toggleShowToolCalls({ checked: false })
-        expect(component.showToolCalls()).toBe(false)
-        expect(cookieService.put).toHaveBeenCalledWith('show_tool_calls', 'false', expect.any(Object))
     })
 })
