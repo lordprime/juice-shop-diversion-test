@@ -97,8 +97,9 @@ router.post('/', (req: Request<Record<string, unknown>, Record<string, unknown>,
         _logo_: utils.extractFilename(config.get('application.logo'))
       }
 
+      const { layout, ...fields } = req.body
       res.render('dataErasureResult', {
-        ...req.body,
+        ...fields,
         ...themeVars
       })
     } catch (error) {

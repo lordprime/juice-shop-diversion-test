@@ -5,7 +5,6 @@
 import i18n from 'i18n'
 import cors from 'cors'
 import fs from 'node:fs'
-import yaml from 'js-yaml'
 import config from 'config'
 import morgan from 'morgan'
 import multer from 'multer'
@@ -23,7 +22,6 @@ import compression from 'compression'
 import robots from 'express-robots-txt'
 import cookieParser from 'cookie-parser'
 import * as Prometheus from 'prom-client'
-import swaggerUi from 'swagger-ui-express'
 import featurePolicy from 'feature-policy'
 import { IpFilter } from 'express-ipfilter'
 // @ts-expect-error FIXME due to non-existing type definitions for express-security.txt
@@ -67,7 +65,6 @@ import * as address from './routes/address'
 import * as metrics from './routes/metrics'
 import * as payment from './routes/payment'
 import { placeOrder } from './routes/order'
-import { b2bOrder } from './routes/b2bOrder'
 import * as delivery from './routes/delivery'
 import * as recycles from './routes/recycles'
 import * as twoFactorAuth from './routes/2fa'
@@ -121,8 +118,6 @@ const server = new http.Server(app)
 const errorhandler = require('errorhandler')
 
 const startTime = Date.now()
-
-const swaggerDocument = yaml.load(fs.readFileSync('./swagger.yml', 'utf8'))
 
 const appName = config.get<string>('application.customMetricsPrefix')
 const startupGauge = new Prometheus.Gauge({
@@ -271,9 +266,6 @@ function configureApp (app: ReturnType<typeof express>, seq: typeof sequelize) {
   app.use('/support/logs', serveIndexMiddleware, serveIndex('logs', { icons: true, view: 'details' }))
   app.use('/support/logs/:file', serveLogFiles())
 
-  /* Swagger documentation for B2B v2 endpoints */
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-
   /* Express 4 ships mime@1.x which predates AVIF, so .avif would be served as application/octet-stream */
   const setStaticFileHeaders = (res: http.ServerResponse, filePath: string) => {
     if (path.extname(filePath) === '.avif') {
@@ -394,8 +386,6 @@ function configureApp (app: ReturnType<typeof express>, seq: typeof sequelize) {
     }
     next()
   })
-  /* Unauthorized users are not allowed to access B2B API */
-  app.use('/b2b/v2', security.isAuthorized())
   /* Check if the quantity is available in stock and limit per user not exceeded, then add item to basket */
   app.put('/api/BasketItems/:id', security.appendUserId(), utils.asyncHandler(basketItems.quantityCheckBeforeBasketItemUpdate()))
   app.post('/api/BasketItems', security.appendUserId(), utils.asyncHandler(basketItems.quantityCheckBeforeBasketItemAddition()), utils.asyncHandler(basketItems.addBasketItem()))
@@ -555,9 +545,6 @@ function configureApp (app: ReturnType<typeof express>, seq: typeof sequelize) {
   app.put('/rest/products/:id/reviews', utils.asyncHandler(createProductReviews()))
   app.patch('/rest/products/reviews', security.isAuthorized(), updateProductReviews())
   app.post('/rest/products/reviews', security.isAuthorized(), utils.asyncHandler(likeProductReviews()))
-
-  /* B2B Order API */
-  app.post('/b2b/v2/orders', b2bOrder())
 
   /* File Serving */
   app.get('/the/devs/are/so/funny/they/hid/an/easter/egg/within/the/easter/egg', serveEasterEgg())

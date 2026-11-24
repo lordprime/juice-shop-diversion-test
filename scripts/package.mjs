@@ -70,7 +70,6 @@ const files = await glob([
   '*.md',
   'package.json',
   'ctf.key',
-  'swagger.yml',
   'server.ts',
   'build/**',
   'bom.json',
