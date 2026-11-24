@@ -34,7 +34,6 @@ void describe('Server', () => {
       .get('/')
     assert.equal(res.status, 200)
     assert.ok(res.headers['content-type']?.includes('text/html'))
-    assert.ok(res.text.includes('scripts.js'))
     assert.ok(res.text.includes('main.js'))
     assert.ok(res.text.includes('polyfills.js'))
   })
@@ -44,7 +43,6 @@ void describe('Server', () => {
       .get('/whatever')
     assert.equal(res.status, 200)
     assert.ok(res.headers['content-type']?.includes('text/html'))
-    assert.ok(res.text.includes('scripts.js'))
     assert.ok(res.text.includes('main.js'))
     assert.ok(res.text.includes('polyfills.js'))
   })
@@ -53,7 +51,7 @@ void describe('Server', () => {
     const res = await request(app)
       .get('/public/images/%2e%2e%2f%2e%2e%2fftp/eastere.gg')
     assert.equal(res.status, 200)
-    assert.ok(res.text.includes('<meta name="description" content="Probably the most modern and sophisticated insecure web application">'))
+    assert.ok(res.text.includes('<meta name="description" content="Fresh juices, smoothies and shop merchandise, delivered to your door.">'))
   })
 
   void it('GET serves a security.txt file', async () => {

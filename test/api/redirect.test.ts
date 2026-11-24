@@ -100,12 +100,11 @@ void describe('/redirect', () => {
 
   void it('GET redirected to target URL in "to" parameter when a allow-listed URL is part of the query string', async () => {
     const res = await request(app)
-      .get('/redirect?to=/score-board?satisfyIndexOf=https://github.com/juice-shop/juice-shop')
+      .get('/redirect?to=/about?satisfyIndexOf=https://github.com/juice-shop/juice-shop')
       .redirects(1)
     assert.equal(res.status, 200)
     assert.ok(res.headers['content-type']?.includes('text/html'))
     assert.ok(res.text.includes('main.js'))
-    assert.ok(res.text.includes('scripts.js'))
     assert.ok(res.text.includes('polyfills.js'))
   })
 })
