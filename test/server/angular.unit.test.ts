@@ -27,23 +27,23 @@ void describe('angular', () => {
     assert.match(res.sendFile.mock.calls[0].arguments[0], /index\.html/)
   })
 
-  void it('should raise error for /api endpoint URL', () => {
-    req.url = '/api'
+  void it('should pass an unknown /api URL on as not found', () => {
+    req.url = '/api/unknown'
 
     serveAngularClient()(req, res, next)
 
     assert.equal(res.sendFile.mock.calls.length, 0)
     assert.equal(next.mock.calls.length, 1)
-    assert.ok(next.mock.calls[0].arguments[0] instanceof Error)
+    assert.equal(next.mock.calls[0].arguments.length, 0)
   })
 
-  void it('should raise error for /rest endpoint URL', () => {
-    req.url = '/rest'
+  void it('should pass an unknown /rest URL on as not found', () => {
+    req.url = '/rest/unknown'
 
     serveAngularClient()(req, res, next)
 
     assert.equal(res.sendFile.mock.calls.length, 0)
     assert.equal(next.mock.calls.length, 1)
-    assert.ok(next.mock.calls[0].arguments[0] instanceof Error)
+    assert.equal(next.mock.calls[0].arguments.length, 0)
   })
 })

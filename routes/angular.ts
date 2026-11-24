@@ -11,7 +11,8 @@ export function serveAngularClient () {
     if (!url.startsWith('/api') && !url.startsWith('/rest')) {
       res.sendFile(path.resolve('frontend/dist/frontend/index.html'))
     } else {
-      next(new Error('Unexpected path: ' + url))
+      // an API path nothing answered: a plain 404, like any unknown route
+      next()
     }
   }
 }

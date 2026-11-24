@@ -79,19 +79,19 @@ void describe('/api/Baskets', () => {
       .post('/api/Baskets')
       .set(authHeader)
       .send({ UserId: 1 })
-    assert.equal(res.status, 500)
+    assert.equal(res.status, 404)
   })
 
   void it('GET all baskets is not part of API', async () => {
     const res = await request(app).get('/api/Baskets').set(authHeader)
-    assert.equal(res.status, 500)
+    assert.equal(res.status, 404)
   })
 })
 
 void describe('/api/Baskets/:id', () => {
   void it('GET existing basket is not part of API', async () => {
     const res = await request(app).get('/api/Baskets/1').set(authHeader)
-    assert.equal(res.status, 500)
+    assert.equal(res.status, 404)
   })
 
   void it('PUT update existing basket is not part of API', async () => {
@@ -99,12 +99,12 @@ void describe('/api/Baskets/:id', () => {
       .put('/api/Baskets/1')
       .set(authHeader)
       .send({ UserId: 2 })
-    assert.equal(res.status, 500)
+    assert.equal(res.status, 404)
   })
 
   void it('DELETE existing basket is not part of API', async () => {
     const res = await request(app).delete('/api/Baskets/1').set(authHeader)
-    assert.equal(res.status, 500)
+    assert.equal(res.status, 404)
   })
 })
 
