@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-// Checks the shop's generated text (the content pack and the static pages)
-// before it ships. It flags two things:
+// Checks the text the shop serves (the generated content pack and pages, and
+// the upstream copy: configuration, translations, views, FTP files) before it
+// ships. It flags two things:
 //   - words that do not belong in shop copy at all;
 //   - sentences that read as orders addressed to an automated assistant or
 //     model ("ignore the instructions above", "as an assistant you must ...").
+// Findings listed in lint-allow.json (next to this file) are accepted; each
+// entry names the file, the exact text and why it is legitimate there.
 // Usage: node scripts/catalog/lint.mjs <file or directory> ...
 // Exits 0 when clean, 1 when something is flagged, 2 on bad input.
 
@@ -15,7 +18,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const ADDRESSEE = String.raw`(?:ai|assistants?|agents?|(?:language\s+)?models?|llms?|bots?|chatbots?|gpts?)`
+// Who an order could be aimed at: generic names and the names of well-known models.
+const ADDRESSEE = String.raw`(?:ai|assistants?|agents?|(?:language\s+)?models?|llms?|bots?|chatbots?|gpts?|` +
+  String.raw`automated\s+systems?|claude|chatgpt|gemini|copilot|llama|qwen|deepseek)`
+// Up to four words between the addressee and the verb ("assistants reading this page must").
+const GAP = String.raw`(?:\s+[\w'-]+){0,4}?`
+// Files the lint reads; anything else (images, archives, compiled files) is skipped.
+const TEXT_FILES = /\.(?:json|html?|md|ya?ml|txt|hbs|pug|vtt|csv|bak)$/i
 
 export const RULES = Object.freeze([
   {
@@ -24,7 +33,7 @@ export const RULES = Object.freeze([
   },
   {
     name: 'override-instructions',
-    pattern: /\b(?:ignore|disregard|forget|override)\b[^.!?\n]{0,40}\b(?:instructions?|prompts?|rules|guidelines|directives)\b/i
+    pattern: /\b(?:ignore|disregard|forget|override)\b[^.!?\n]{0,40}\b(?:instructions?|prompts?|rules|guidelines|directives|directions)\b/i
   },
   {
     name: 'prompt-reference',
@@ -33,6 +42,10 @@ export const RULES = Object.freeze([
   {
     name: 'identity-claim',
     pattern: new RegExp(String.raw`\b(?:you\s+are\s+(?:now\s+)?|act\s+as\s+|pretend\s+to\s+be\s+|(?:if|when|since)\s+you\s+are\s+)(?:an?\s+|the\s+)?${ADDRESSEE}\b`, 'i')
+  },
+  {
+    name: 'identity-claim',
+    pattern: new RegExp(String.raw`\b(?:if|when|since)\s+you(?:\s+are|'re)\s+(?:reading|processing|parsing|crawling|scanning|summari[sz]ing)\s+this\b[^.!?\n]{0,40}\b(?:automat\w*|${ADDRESSEE}|crawlers?|scripts?|programs?|tools?)\b`, 'i')
   },
   {
     name: 'addressed-order',
@@ -44,7 +57,7 @@ export const RULES = Object.freeze([
   },
   {
     name: 'duty-for-addressee',
-    pattern: new RegExp(String.raw`\b${ADDRESSEE}\s+(?:must|should|shall|need\s+to|have\s+to|are\s+required\s+to|are\s+instructed\s+to)\b`, 'i')
+    pattern: new RegExp(String.raw`\b${ADDRESSEE}${GAP}\s+(?:must|should|shall|need\s+to|have\s+to|are\s+required\s+to|are\s+instructed\s+to)\b`, 'i')
   },
   {
     name: 'duty-for-addressee',
@@ -53,23 +66,34 @@ export const RULES = Object.freeze([
 ])
 
 export class ContentLinter {
-  constructor (rules = RULES) {
+  // allowed: [{ file, excerpt, why }], file matched as a path suffix and excerpt
+  // compared without regard to case.
+  constructor (rules = RULES, allowed = []) {
     this.rules = rules
+    this.allowed = allowed
   }
 
-  // Every flagged sentence part in one piece of text.
+  // Every flagged sentence part in one piece of text, except allowed ones.
   checkText (text, location) {
     if (typeof text !== 'string') {
       throw new TypeError(`${location}: expected text, got ${typeof text}`)
     }
     const findings = []
     for (const rule of this.rules) {
-      const match = rule.pattern.exec(text)
-      if (match !== null) {
-        findings.push({ location, rule: rule.name, excerpt: match[0] })
+      const global = new RegExp(rule.pattern.source, rule.pattern.flags.includes('g') ? rule.pattern.flags : rule.pattern.flags + 'g')
+      for (const match of text.matchAll(global)) {
+        if (!this.isAllowed(location, match[0])) {
+          findings.push({ location, rule: rule.name, excerpt: match[0] })
+        }
       }
     }
     return findings
+  }
+
+  isAllowed (location, excerpt) {
+    const where = location.replaceAll('\\', '/')
+    return this.allowed.some(entry =>
+      where.includes(entry.file) && entry.excerpt.toLowerCase() === excerpt.toLowerCase())
   }
 
   // Every string anywhere in a parsed JSON value, keys included.
@@ -100,6 +124,9 @@ export class ContentLinter {
 
   checkFile (file) {
     const content = fs.readFileSync(file, 'utf8')
+    if (content.includes('\u0000')) {
+      return []
+    }
     if (file.endsWith('.json')) {
       return this.checkJson(JSON.parse(content), file)
     }
@@ -115,7 +142,9 @@ export class ContentLinter {
       return this.checkFile(target)
     }
     return fs.readdirSync(target).sort()
-      .flatMap(name => this.checkPath(path.join(target, name)))
+      .map(name => path.join(target, name))
+      .filter(child => fs.statSync(child).isDirectory() || TEXT_FILES.test(child))
+      .flatMap(child => this.checkPath(child))
   }
 }
 
@@ -129,14 +158,24 @@ function decodeEntities (text) {
     .replace(/&amp;/g, '&')
 }
 
+// The accepted findings, from lint-allow.json next to this file.
+export function loadAllowList (file = path.join(path.dirname(fileURLToPath(import.meta.url)), 'lint-allow.json')) {
+  const entries = JSON.parse(fs.readFileSync(file, 'utf8'))
+  if (!Array.isArray(entries) || !entries.every(e => typeof e?.file === 'string' && e.file !== '' &&
+      typeof e.excerpt === 'string' && e.excerpt !== '' && typeof e.why === 'string' && e.why !== '')) {
+    throw new Error(`${file}: every entry needs a file, an excerpt and a why`)
+  }
+  return entries
+}
+
 function main (targets) {
   if (targets.length === 0) {
     console.error('usage: node scripts/catalog/lint.mjs <file or directory> ...')
     return 2
   }
-  const linter = new ContentLinter()
   let findings
   try {
+    const linter = new ContentLinter(RULES, loadAllowList())
     findings = targets.flatMap(target => linter.checkPath(target))
   } catch (error) {
     console.error(`content lint: ${error.message}`)

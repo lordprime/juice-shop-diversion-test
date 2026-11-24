@@ -1,0 +1,17 @@
+[
+  {
+    "file": "ftp/package-lock.json.bak",
+    "excerpt": "agent",
+    "why": "npm package names in an upstream backup file (agent-base, https-proxy-agent, socks-proxy-agent)"
+  },
+  {
+    "file": "assets/i18n/it_IT.json",
+    "excerpt": "ai",
+    "why": "Italian preposition 'ai' (to the)"
+  },
+  {
+    "file": "assets/i18n/ro_RO.json",
+    "excerpt": "ai",
+    "why": "Romanian verb 'ai' (you have)"
+  }
+]
