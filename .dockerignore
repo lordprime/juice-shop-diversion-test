@@ -9,7 +9,6 @@
 .idea/
 .junie/
 .mailmap
-.npmrc
 .nyc_output
 .playwright-mcp/
 /bom.json
@@ -28,6 +27,8 @@ node_modules/
 rsn/
 screenshots/
 scripts/
+# the content pack's generator, lint and tests run during the image build
+!scripts/catalog/
 terraform/
 test/
 vagrant/
