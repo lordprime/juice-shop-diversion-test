@@ -93,7 +93,6 @@
   "Sweet & tasty!": "Söt och god!",
   "Woodruff Syrup \"Forest Master X-Treme\"": "Myskmadresirap \"Forest Master X-Treme\"",
   "Harvested and manufactured in the Black Forest, Germany. Can cause hyperactive behavior in children. Can cause permanent green tongue when consumed undiluted.": "Skördad och tillverkad i Schwarzwald i Tyskland. Kan orsaka hyperaktivt beteende hos barn. Kan ge permanent grön tunga om den dricks outspädd.",
-  " <em>(This challenge is <strong>potentially harmful</strong> on Windows!)</em>": " <em>(Den här utmaningen är <strong>potentiellt skadlig</strong> i Windows!)</em>",
   "The developers probably used some kind of tool to automate their cloud deployment.": "Utvecklarna använde troligen något slags verktyg för att automatisera molndistributionen.",
   "Try common directory names that popular deployment automation tools use by convention.": "Prova vanliga katalognamn som populära verktyg för distributionsautomatisering använder enligt konvention.",
   "Some infrastructure file accessible from the web application contains sensitive information that can be used to forge authentication tokens.": "Någon infrastrukturfil som är åtkomlig från webbprogrammet innehåller känslig information som kan användas för att förfalska autentiseringstoken.",

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-import config from 'config'
 import {
   type InferAttributes,
   type InferCreationAttributes,
@@ -106,20 +105,6 @@ const UserModelInit = (sequelize: Sequelize) => {
       sequelize
     }
   )
-
-  User.addHook('afterValidate', async (user: User) => {
-    if (
-      user.email &&
-    user.email.toLowerCase() ===
-      `acc0unt4nt@${config.get<string>('application.domain')}`.toLowerCase()
-    ) {
-      await Promise.reject(
-        new Error(
-          'Nice try, but this is not how the "Ephemeral Accountant" challenge works!'
-        )
-      )
-    }
-  })
 }
 
 export { User as UserModel, UserModelInit }

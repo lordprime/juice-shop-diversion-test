@@ -93,7 +93,6 @@
   "Sweet & tasty!": "香甜可口！",
   "Woodruff Syrup \"Forest Master X-Treme\"": "Woodruff Syrup \"森林大师X-Treme\"",
   "Harvested and manufactured in the Black Forest, Germany. Can cause hyperactive behavior in children. Can cause permanent green tongue when consumed undiluted.": "在德国黑森林采伐和制造。 可能导致儿童多动。 未经稀释食用会导致永久性舌头变绿。",
-  " <em>(This challenge is <strong>potentially harmful</strong> on Windows!)</em>": "<em>(此挑战在 Windows 系统上可能存在<strong>潜在危害</strong>！)</em>",
   "The developers probably used some kind of tool to automate their cloud deployment.": "开发人员很可能使用某种工具来自动化他们的云部署。",
   "Try common directory names that popular deployment automation tools use by convention.": "尝试使用流行部署自动化工具按惯例采用的常见目录名称。",
   "Some infrastructure file accessible from the web application contains sensitive information that can be used to forge authentication tokens.": "Web 应用程序可访问的某些基础架构文件中包含敏感信息，这些信息可被用于伪造身份验证令牌。",
