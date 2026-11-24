@@ -48,12 +48,6 @@ export interface Config {
       title: string
       message: string
     }
-    cookieConsent: {
-      message: string
-      dismissText: string
-      linkText: string
-      linkUrl: string
-    }
     securityTxt: {
       contact: string
       encryption: string

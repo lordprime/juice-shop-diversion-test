@@ -35,8 +35,7 @@
               "src/styles.scss",
               "node_modules/material-icons/iconfont/material-icons.css",
               "node_modules/flag-icons/css/flag-icons.min.css",
-              "node_modules/font-mfizz/dist/font-mfizz.css",
-              "node_modules/cookieconsent/build/cookieconsent.min.css"
+              "node_modules/font-mfizz/dist/font-mfizz.css"
             ],
             "allowedCommonJsDependencies": [
 
@@ -50,9 +49,7 @@
               "js-sha3",
               "qrcode"
             ],
-            "scripts": [
-              "node_modules/cookieconsent/build/cookieconsent.min.js"
-            ],
+            "scripts": [],
             "outputHashing": "media",
             "extractLicenses": false,
             "sourceMap": true,

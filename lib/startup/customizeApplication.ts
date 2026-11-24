@@ -21,9 +21,6 @@ const customizeApplication = async () => {
   if (config.get('application.theme')) {
     customizeTheme()
   }
-  if (config.get('application.cookieConsent')) {
-    customizeCookieConsentBanner()
-  }
   if (config.get('application.promotion')) {
     void customizePromotionVideo()
     void customizePromotionSubtitles()
@@ -89,17 +86,6 @@ const customizeTheme = () => {
   replace({
     regex: /".*-theme"/,
     replacement: bodyClass,
-    paths: ['frontend/dist/frontend/index.html'],
-    recursive: false,
-    silent: true
-  })
-}
-
-const customizeCookieConsentBanner = () => {
-  const contentProperty = '"content": { "message": "' + config.get<string>('application.cookieConsent.message') + '", "dismiss": "' + config.get<string>('application.cookieConsent.dismissText') + '", "link": "' + config.get<string>('application.cookieConsent.linkText') + '", "href": "' + config.get<string>('application.cookieConsent.linkUrl') + '" }'
-  replace({
-    regex: /"content": { "message": ".*", "dismiss": ".*", "link": ".*", "href": ".*" }/,
-    replacement: contentProperty,
     paths: ['frontend/dist/frontend/index.html'],
     recursive: false,
     silent: true

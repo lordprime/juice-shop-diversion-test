@@ -30,13 +30,6 @@ const WelcomeBannerSchema = z.object({
   message: z.string()
 })
 
-const CookieConsentSchema = z.object({
-  message: z.string(),
-  dismissText: z.string(),
-  linkText: z.string(),
-  linkUrl: z.string()
-})
-
 const SecurityTxtSchema = z.object({
   contact: z.string(),
   encryption: z.string(),
@@ -84,7 +77,6 @@ export const ApplicationSchema = z.object({
   social: SocialSchema,
   recyclePage: RecyclePageSchema,
   welcomeBanner: WelcomeBannerSchema,
-  cookieConsent: CookieConsentSchema,
   securityTxt: SecurityTxtSchema,
   promotion: PromotionSchema,
   easterEggPlanet: EasterEggPlanetSchema,
@@ -164,7 +156,6 @@ export const ValidationSchema = z.preprocess(dropNulls, z.object({
     social: SocialSchema.partial().optional(),
     recyclePage: RecyclePageSchema.partial().optional(),
     welcomeBanner: WelcomeBannerSchema.partial().optional(),
-    cookieConsent: CookieConsentSchema.partial().optional(),
     securityTxt: SecurityTxtSchema.partial().optional(),
     promotion: PromotionSchema.partial().optional(),
     easterEggPlanet: EasterEggPlanetSchema.partial().optional(),

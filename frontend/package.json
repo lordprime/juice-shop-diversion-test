@@ -38,7 +38,6 @@
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "angularx-qrcode": "^21.0.5",
-    "cookieconsent": "^3.1.1",
     "flag-icons": "^6.9.2",
     "font-mfizz": "^2.4.1",
     "jwt-decode": "^4.0.0",
