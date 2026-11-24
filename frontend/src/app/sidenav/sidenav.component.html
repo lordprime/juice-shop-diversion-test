@@ -245,6 +245,18 @@
       {{"LABEL_PHOTO_WALL" | translate}}
     </span>
   </a>
+  <a mat-list-item href="./blog/" aria-label="Go to the blog">
+    <mat-icon>article</mat-icon>
+    <span class="menu-text truncate">Blog</span>
+  </a>
+  <a mat-list-item href="./help/" aria-label="Go to the help pages">
+    <mat-icon>help_outline</mat-icon>
+    <span class="menu-text truncate">Help</span>
+  </a>
+  <a mat-list-item href="./changelog/" aria-label="Go to the changelog">
+    <mat-icon>history</mat-icon>
+    <span class="menu-text truncate">Changelog</span>
+  </a>
   @if (isLoggedIn()) {
     <a mat-list-item routerLink="/deluxe-membership" (click)="onToggleSidenav()" aria-label="Go to deluxe membership page">
       <mat-icon>card_membership</mat-icon>

@@ -281,6 +281,13 @@ function configureApp (app: ReturnType<typeof express>, seq: typeof sequelize) {
   app.use('/vendor/material-icons', express.static(path.resolve('node_modules/material-icons/iconfont')))
   app.use('/vendor/fontsource-roboto', express.static(path.resolve('node_modules/@fontsource/roboto')))
 
+  /* Static blog, help and changelog pages; anything else under them is a plain 404 */
+  for (const section of ['blog', 'help', 'changelog']) {
+    app.use(`/${section}`, express.static(path.resolve('pages', section)), (req: Request, res: Response) => {
+      res.sendStatus(404)
+    })
+  }
+
   /* Configure and enable backend-side i18n */
   i18n.configure({
     locales: locales.map((locale: { key: string }) => locale.key),

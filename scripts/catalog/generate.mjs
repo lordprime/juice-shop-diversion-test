@@ -3,27 +3,30 @@
  * SPDX-License-Identifier: MIT
  */
 
-// Writes the content pack from its fixed seed, or with --check confirms that
-// the files in the repository are exactly what the seed produces.
+// Writes the content pack (data/static/catalog.json and the pages/ tree) from
+// its fixed seed, or with --check confirms that the files in the repository
+// are exactly what the seed produces.
 // Usage: node scripts/catalog/generate.mjs [--check]
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CatalogGenerator } from './catalog.mjs'
+import { SiteGenerator } from './pages.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 
 export class ContentPack {
-  constructor (root = ROOT, generator = new CatalogGenerator()) {
+  constructor (root = ROOT, generator = new CatalogGenerator(), site = new SiteGenerator()) {
     this.root = root
     this.generator = generator
+    this.site = site
   }
 
   // Relative path -> file content, for everything the pack consists of.
   files () {
     const catalog = this.generator.generate()
-    return new Map([['data/static/catalog.json', JSON.stringify(catalog, null, 2) + '\n']])
+    return new Map([['data/static/catalog.json', JSON.stringify(catalog, null, 2) + '\n'], ...this.site.generate()])
   }
 
   write () {
