@@ -37,7 +37,6 @@ const validateConfig = async ({ products, memories, exitOnFailure = true }: { pr
   success = checkUnambiguousMandatorySpecialMemories(memories) && success
   success = checkUniqueSpecialOnMemories(memories) && success
   success = checkSpecialMemoriesHaveNoUserAssociated(memories) && success
-  success = checkForIllogicalCombos() && success
   if (success) {
     logger.info(`Configuration ${colors.bold(process.env.NODE_ENV ?? 'default')} validated (${colors.green('SUCCESS')})`)
   } else {
@@ -157,30 +156,6 @@ export const checkUniqueSpecialOnMemories = (memories: MemoryConfig[]) => {
       success = false
     }
   })
-  return success
-}
-
-export const checkForIllogicalCombos = (configuration = config.util.toObject()) => {
-  let success = true
-  if (configuration.challenges?.restrictToTutorialsFirst && !configuration.hackingInstructor?.isEnabled) {
-    logger.warn(`Restricted tutorial mode is enabled while Hacking Instructor is disabled (${colors.red('ERROR')})`)
-    success = false
-  }
-  if (configuration.ctf?.showFlagsInNotifications && !configuration.challenges?.showSolvedNotifications) {
-    logger.warn(`CTF flags are enabled while challenge solved notifications are disabled (${colors.red('ERROR')})`)
-    success = false
-  }
-  if (['name', 'flag', 'both'].includes(configuration.ctf?.showCountryDetailsInNotifications) && !configuration.ctf?.showFlagsInNotifications) {
-    logger.warn(`CTF country mappings for FBCTF are enabled while CTF flags are disabled (${colors.red('ERROR')})`)
-    success = false
-  }
-  const notifications = configuration.ctf?.systemWideNotifications
-  if (notifications?.url) {
-    if (!notifications.pollFrequencySeconds || typeof notifications.pollFrequencySeconds !== 'number' || notifications.pollFrequencySeconds <= 0) {
-      logger.warn(`ctf.systemWideNotifications.url is set but pollFrequencySeconds is missing or not a positive number (${colors.red('ERROR')})`)
-      success = false
-    }
-  }
   return success
 }
 

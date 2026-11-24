@@ -5,7 +5,6 @@
 
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import type { ChallengeModel } from '@juice-shop/models/challenge'
 import fs from 'node:fs'
 import * as utils from '../../lib/utils'
 import { ProxyAgent } from 'proxy-agent'
@@ -168,51 +167,6 @@ void describe('utils', () => {
           'usbmux:x:140:140:usbmux user:/:/usr/bin/nologin\n' +
           'moi:x:1000:1000:moi:/home/moi:/bin/zsh\n'), true)
     })
-  })
-
-  void describe('getChallengeEnablementStatus', () => {
-    const defaultIsEnvironmentFunctions = {
-      isDocker: () => false,
-      isHeroku: () => false,
-      isWindows: () => false
-    }
-
-    for (const safetyMode of ['enabled', 'disabled', 'auto'] as const) {
-      void it(`challenges without disabledEnv are enabled with safetyMode set to ${safetyMode}`, () => {
-        const challenge: ChallengeModel = { disabledEnv: null } as unknown as ChallengeModel
-
-        assert.deepEqual(utils.getChallengeEnablementStatus(challenge, safetyMode, defaultIsEnvironmentFunctions), { enabled: true, disabledBecause: null })
-      })
-    }
-
-    const testCases = [
-      { name: 'Docker', environmentFunction: 'isDocker' },
-      { name: 'Heroku', environmentFunction: 'isHeroku' },
-      { name: 'Windows', environmentFunction: 'isWindows' }
-    ]
-
-    for (const testCase of testCases) {
-      void it(`safetyMode: 'enabled': challenge with disabledOnEnv ${testCase.name} should be marked as disabled`, () => {
-        const challenge: ChallengeModel = { disabledEnv: testCase.name } as unknown as ChallengeModel
-
-        const isEnvironmentFunctions = { ...defaultIsEnvironmentFunctions, [testCase.environmentFunction]: () => true }
-        assert.deepEqual(utils.getChallengeEnablementStatus(challenge, 'enabled', isEnvironmentFunctions), { enabled: false, disabledBecause: testCase.name })
-      })
-
-      void it(`safetyMode: 'auto': challenge with disabledOnEnv ${testCase.name} should be marked as disabled`, () => {
-        const challenge: ChallengeModel = { disabledEnv: testCase.name } as unknown as ChallengeModel
-
-        const isEnvironmentFunctions = { ...defaultIsEnvironmentFunctions, [testCase.environmentFunction]: () => true }
-        assert.deepEqual(utils.getChallengeEnablementStatus(challenge, 'auto', isEnvironmentFunctions), { enabled: false, disabledBecause: testCase.name })
-      })
-
-      void it(`safetyMode: 'disabled': challenge with disabledOnEnv ${testCase.name} should be marked as enabled`, () => {
-        const challenge: ChallengeModel = { disabledEnv: testCase.name } as unknown as ChallengeModel
-
-        const isEnvironmentFunctions = { ...defaultIsEnvironmentFunctions, [testCase.environmentFunction]: () => true }
-        assert.deepEqual(utils.getChallengeEnablementStatus(challenge, 'disabled', isEnvironmentFunctions), { enabled: true, disabledBecause: null })
-      })
-    }
   })
 
   void describe('toISO8601', () => {

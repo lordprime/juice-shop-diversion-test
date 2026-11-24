@@ -4,7 +4,6 @@
  */
 
 import { z } from 'zod'
-import { CHALLENGE_KEYS, type ChallengeKey } from '../models/challenge'
 
 // -- Application sub-schemas --
 
@@ -92,20 +91,6 @@ export const ApplicationSchema = z.object({
   googleOauth: GoogleOauthSchema
 })
 
-export const ChallengesSchema = z.object({
-  showSolvedNotifications: z.boolean(),
-  showHints: z.boolean(),
-  showMitigations: z.boolean(),
-  codingChallengesEnabled: z.enum(['never', 'solved', 'always']),
-  restrictToTutorialsFirst: z.boolean(),
-  overwriteUrlForProductTamperingChallenge: z.string(),
-  overwriteUrlForCsrfChallenge: z.string(),
-  xssBonusPayload: z.string(),
-  safetyMode: z.enum(['enabled', 'disabled', 'auto']).optional(),
-  csafHashValue: z.string(),
-  metricsIgnoredUserAgents: z.array(z.string()).optional()
-})
-
 export const HackingInstructorSchema = z.object({
   isEnabled: z.boolean(),
   avatarImage: z.string(),
@@ -155,29 +140,12 @@ export const MemorySchema = z.object({
   geoStalkingVisualSecurityAnswer: z.string().optional()
 })
 
-// Challenge country mapping keyed by ChallengeKey.
-export const ChallengeKeySchema = z.enum(CHALLENGE_KEYS as unknown as [ChallengeKey, ...ChallengeKey[]])
-const CountryEntrySchema = z.object({ name: z.string(), code: z.string() })
-export const CountryMappingSchema = z.record(ChallengeKeySchema, CountryEntrySchema)
-
-export const CtfSchema = z.object({
-  showFlagsInNotifications: z.boolean(),
-  showCountryDetailsInNotifications: z.enum(['none', 'name', 'flag', 'both']),
-  countryMapping: CountryMappingSchema.nullable().optional(),
-  systemWideNotifications: z.object({
-    url: z.string().nullable().optional(),
-    pollFrequencySeconds: z.number().nullable().optional()
-  }).optional()
-})
-
 export const AppConfigSchema = z.object({
   server: ServerSchema,
   application: ApplicationSchema,
-  challenges: ChallengesSchema,
   hackingInstructor: HackingInstructorSchema,
   products: z.array(ProductSchema),
-  memories: z.array(MemorySchema),
-  ctf: CtfSchema
+  memories: z.array(MemorySchema)
 })
 
 // Recursively drops null-valued object keys and null array elements.
@@ -209,19 +177,15 @@ export const ValidationSchema = z.preprocess(dropNulls, z.object({
     easterEggPlanet: EasterEggPlanetSchema.partial().optional(),
     googleOauth: GoogleOauthSchema.partial().optional()
   }).optional(),
-  challenges: ChallengesSchema.partial().optional(),
   hackingInstructor: HackingInstructorSchema.partial().optional(),
   products: z.array(ProductSchema.partial()).optional(),
-  memories: z.array(MemorySchema.partial()).optional(),
-  ctf: CtfSchema.partial().optional()
+  memories: z.array(MemorySchema.partial()).optional()
 }))
 
 export type ServerConfig = z.infer<typeof ServerSchema>
 export type ApplicationConfig = z.infer<typeof ApplicationSchema>
-export type ChallengesConfig = z.infer<typeof ChallengesSchema>
 export type HackingInstructorConfig = z.infer<typeof HackingInstructorSchema>
 export type Product = z.infer<typeof ProductSchema>
 export type AlternateImage = z.infer<typeof AlternateImageSchema>
 export type Memory = z.infer<typeof MemorySchema>
-export type CtfConfig = z.infer<typeof CtfSchema>
 export type AppConfig = z.infer<typeof AppConfigSchema>

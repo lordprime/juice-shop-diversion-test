@@ -2,12 +2,9 @@ import { type Sequelize } from 'sequelize'
 import { AddressModel } from './address'
 import { BasketModel } from './basket'
 import { BasketItemModel } from './basketitem'
-import { ChallengeModel } from './challenge'
-import { ChallengeDependencyModel } from './challengeDependency'
 import { CardModel } from './card'
 import { ComplaintModel } from './complaint'
 import { FeedbackModel } from './feedback'
-import { HintModel } from './hint'
 import { ImageCaptchaModel } from './imageCaptcha'
 import { MemoryModel } from './memory'
 import { PrivacyRequestModel } from './privacyRequests'
@@ -141,12 +138,6 @@ const relationsInit = (_sequelize: Sequelize) => {
       name: 'UserId'
     }
   })
-
-  ChallengeModel.hasMany(ChallengeDependencyModel)
-  ChallengeDependencyModel.belongsTo(ChallengeModel)
-
-  ChallengeModel.hasMany(HintModel)
-  HintModel.belongsTo(ChallengeModel)
 }
 
 export { relationsInit }

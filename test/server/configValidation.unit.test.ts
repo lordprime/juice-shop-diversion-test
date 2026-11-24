@@ -14,8 +14,7 @@ import validateConfig, {
   checkMinimumRequiredNumberOfMemories,
   checkUniqueSpecialOnMemories,
   checkSpecialMemoriesHaveNoUserAssociated,
-  checkNecessaryExtraKeysOnSpecialProducts,
-  checkForIllogicalCombos
+  checkNecessaryExtraKeysOnSpecialProducts
 } from '../../lib/startup/validateConfig'
 import type { Memory, Product } from '@juice-shop/lib/config.schema'
 
@@ -273,37 +272,5 @@ void describe('configValidation', () => {
     }
 
     assert.equal(checkConfigSchema(config), false)
-  })
-
-  void describe('checkForIllogicalCombos', () => {
-    const BASE_CONFIG = {
-      challenges: { restrictToTutorialsFirst: false, showSolvedNotifications: true },
-      hackingInstructor: { isEnabled: true },
-      ctf: { showFlagsInNotifications: false, showCountryDetailsInNotifications: 'none' }
-    }
-
-    void it('should accept a config without systemWideNotifications set', () => {
-      assert.equal(checkForIllogicalCombos(BASE_CONFIG), true)
-    })
-
-    void it('should accept a config with systemWideNotifications url and pollFrequencySeconds set', () => {
-      const config = { ...BASE_CONFIG, ctf: { ...BASE_CONFIG.ctf, systemWideNotifications: { url: 'http://example.com/notify', pollFrequencySeconds: 30 } } }
-      assert.equal(checkForIllogicalCombos(config), true)
-    })
-
-    void it('should fail if systemWideNotifications url is set but pollFrequencySeconds is missing', () => {
-      const config = { ...BASE_CONFIG, ctf: { ...BASE_CONFIG.ctf, systemWideNotifications: { url: 'http://example.com/notify' } } }
-      assert.equal(checkForIllogicalCombos(config), false)
-    })
-
-    void it('should fail if systemWideNotifications url is set but pollFrequencySeconds is zero', () => {
-      const config = { ...BASE_CONFIG, ctf: { ...BASE_CONFIG.ctf, systemWideNotifications: { url: 'http://example.com/notify', pollFrequencySeconds: 0 } } }
-      assert.equal(checkForIllogicalCombos(config), false)
-    })
-
-    void it('should fail if systemWideNotifications url is set but pollFrequencySeconds is negative', () => {
-      const config = { ...BASE_CONFIG, ctf: { ...BASE_CONFIG.ctf, systemWideNotifications: { url: 'http://example.com/notify', pollFrequencySeconds: -10 } } }
-      assert.equal(checkForIllogicalCombos(config), false)
-    })
   })
 })

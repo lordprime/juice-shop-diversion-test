@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { describe, it, before, after, beforeEach, afterEach, mock } from 'node:test'
+import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import net from 'node:net'
 import semver from 'semver'
@@ -90,5 +90,4 @@ void describe('preconditionValidation', () => {
       assert.equal(checkIfEnvironmentVariableExists('NON_EXISTING_VAR'), false)
     })
   })
-
 })

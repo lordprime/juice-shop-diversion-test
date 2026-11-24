@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import * as challengeUtils from '../lib/challengeUtils'
 import { type Request, type Response } from 'express'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 
 export function retrieveLoggedInUser () {
@@ -48,13 +46,10 @@ export function retrieveLoggedInUser () {
     } catch (err) {
       response = { user: emptyUser }
     }
-    // Solve passwordHashLeakChallenge when password field is included in response
-    challengeUtils.solveIf(challenges.passwordHashLeakChallenge, () => response?.user?.password)
 
     if (req.query.callback === undefined) {
       res.json(response)
     } else {
-      challengeUtils.solveIf(challenges.emailLeakChallenge, () => { return true })
       res.jsonp(response)
     }
   }

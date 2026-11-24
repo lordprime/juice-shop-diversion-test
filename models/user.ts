@@ -12,9 +12,6 @@ import {
   type CreationOptional,
   type Sequelize
 } from 'sequelize'
-import * as challengeUtils from '../lib/challengeUtils'
-import * as utils from '../lib/utils'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 
 class User extends Model<
@@ -33,9 +30,9 @@ InferCreationAttributes<User>
   declare isActive: CreationOptional<boolean>
 }
 
-const UserModelInit = (sequelize: Sequelize) => { // vuln-code-snippet start weakPasswordChallenge
+const UserModelInit = (sequelize: Sequelize) => {
   User.init(
-    { // vuln-code-snippet hide-start
+    {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -45,34 +42,22 @@ const UserModelInit = (sequelize: Sequelize) => { // vuln-code-snippet start wea
         type: DataTypes.STRING,
         defaultValue: '',
         set (username: string) {
-          if (utils.isChallengeEnabled(challenges.persistedXssUserChallenge)) {
-            username = security.sanitizeLegacy(username)
-          } else {
-            username = security.sanitizeSecure(username)
-          }
-          this.setDataValue('username', username)
+          this.setDataValue('username', security.sanitizeSecure(username))
         }
       },
       email: {
         type: DataTypes.STRING,
         unique: true,
         set (email: string) {
-          if (utils.isChallengeEnabled(challenges.persistedXssUserChallenge)) {
-            challengeUtils.solveIf(challenges.persistedXssUserChallenge, () => {
-              return email?.includes('<iframe src="javascript:alert(`xss`)">') ?? false
-            })
-          } else {
-            email = security.sanitizeSecure(email)
-          }
-          this.setDataValue('email', email)
+          this.setDataValue('email', security.sanitizeSecure(email))
         }
-      }, // vuln-code-snippet hide-end
+      },
       password: {
         type: DataTypes.STRING,
         set (clearTextPassword: string) {
-          this.setDataValue('password', security.hash(clearTextPassword)) // vuln-code-snippet vuln-line weakPasswordChallenge
+          this.setDataValue('password', security.hash(clearTextPassword))
         }
-      }, // vuln-code-snippet end weakPasswordChallenge
+      },
       role: {
         type: DataTypes.STRING,
         defaultValue: 'customer',

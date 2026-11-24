@@ -5,10 +5,8 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 
-import * as challengeUtils from '../lib/challengeUtils'
 import { type ProductModel } from '../models/product'
 import { MemoryModel } from '../models/memory'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import * as db from '../data/mongodb'
 
@@ -101,10 +99,6 @@ export function dataExport () {
           }))
         }
 
-        const emailHash = security.hash(email).slice(0, 4)
-        for (const order of userData.orders) {
-          challengeUtils.solveIf(challenges.dataExportChallenge, () => { return order.orderId.split('-')[0] !== emailHash })
-        }
         res.status(200).send({ userData: JSON.stringify(userData, null, 2), confirmation: 'Your data export will open in a new Browser window.' })
       } else {
         next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))

@@ -7,12 +7,9 @@ import { AddressModel } from '../models/address'
 import { BasketModel } from '../models/basket'
 import { BasketItemModel } from '../models/basketitem'
 import { CardModel } from '../models/card'
-import { ChallengeModel, type ChallengeKey } from '../models/challenge'
-import { ChallengeDependencyModel } from '../models/challengeDependency'
 import { ComplaintModel } from '../models/complaint'
 import { DeliveryModel } from '../models/delivery'
 import { FeedbackModel } from '../models/feedback'
-import { HintModel } from '../models/hint'
 import { MemoryModel } from '../models/memory'
 import { ProductModel } from '../models/product'
 import { QuantityModel } from '../models/quantity'
@@ -23,28 +20,21 @@ import { UserModel } from '../models/user'
 import { WalletModel } from '../models/wallet'
 import { type Product } from './types'
 import logger from '../lib/logger'
-import { getCodeChallenges } from '../lib/codingChallenges'
 import type { Memory as MemoryConfig, Product as ProductConfig } from '../lib/config.schema'
 import config from 'config'
 import * as utils from '../lib/utils'
 import type { StaticUser, StaticUserAddress, StaticUserCard } from './staticData'
-import { loadStaticChallengeData, loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
-import type { CreationAttributes } from 'sequelize'
+import { loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
 import { ordersCollection, reviewsCollection } from './mongodb'
-import { AllHtmlEntities as Entities } from 'html-entities'
 import * as datacache from './datacache'
 import * as security from '../lib/insecurity'
-import { variableDependencies, domainDependencies, preconditionResults } from '../lib/startup/validatePreconditions'
 // @ts-expect-error FIXME due to non-existing type definitions for replace
 import replace from 'replace'
-
-const entities = new Entities()
 
 export default async () => {
   const creators = [
     createSecurityQuestions,
     createUsers,
-    createChallenges,
     createRandomFakeUsers,
     createProducts,
     createBaskets,
@@ -62,124 +52,6 @@ export default async () => {
 
   for (const creator of creators) {
     await creator()
-  }
-}
-
-async function createChallenges () {
-  const showHints = config.get<boolean>('challenges.showHints')
-  const showMitigations = config.get<boolean>('challenges.showMitigations')
-
-  const challenges = await loadStaticChallengeData()
-  const codeChallenges = await getCodeChallenges()
-  const challengeKeysWithCodeChallenges = [...codeChallenges.keys()]
-
-  const challengeRecords: Array<CreationAttributes<ChallengeModel>> = []
-  const pendingDependencies: Array<{ challengeKey: ChallengeKey, deps: any[] }> = []
-  const pendingHints: Array<{ challengeKey: ChallengeKey, hints: string[] }> = []
-
-  for (const challenge of challenges) {
-    let description = challenge.description
-    let tags = challenge.tags
-
-    const { enabled: isChallengeEnabled, disabledBecause } = utils.getChallengeEnablementStatus({ disabledEnv: challenge.disabledEnv?.join(';') ?? '' } as ChallengeModel)
-    description = description.replace('juice-sh.op', config.get<string>('application.domain'))
-    description = description.replace('http://htmledit.squarefree.com', config.get<string>('challenges.overwriteUrlForCsrfChallenge'))
-    description = description.replace('&lt;iframe width=&quot;100%&quot; height=&quot;166&quot; scrolling=&quot;no&quot; frameborder=&quot;no&quot; allow=&quot;autoplay&quot; src=&quot;https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&amp;color=%23ff5500&amp;auto_play=true&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&quot;&gt;&lt;/iframe&gt;', entities.encode(config.get('challenges.xssBonusPayload')))
-    const hasCodingChallenge = challengeKeysWithCodeChallenges.includes(challenge.key)
-
-    if (hasCodingChallenge) {
-      tags = tags ? [...tags, 'With Coding Challenge'] : ['With Coding Challenge']
-    }
-
-    for (const dependency of Object.values(variableDependencies)) {
-      if (dependency.dependentChallenges.some(dep => dep.includes(challenge.name) || dep.includes(challenge.key))) {
-        tags = tags ? [...tags, `Requires ${dependency.dependency}`] : [`Requires ${dependency.dependency}`]
-      }
-    }
-    for (const dependency of Object.values(domainDependencies)) {
-      if (dependency.dependentChallenges.some(dep => dep.includes(challenge.name) || dep.includes(challenge.key))) {
-        tags = tags ? [...tags, `Requires ${dependency.dependency}`] : [`Requires ${dependency.dependency}`]
-      }
-    }
-
-    const challengeDependencies: any[] = []
-    for (const [variable, dependency] of Object.entries(variableDependencies)) {
-      if (dependency.dependentChallenges.some(dep => dep.includes(challenge.name) || dep.includes(challenge.key))) {
-        challengeDependencies.push({ ...dependency, key: variable, missing: !preconditionResults[variable] })
-      }
-    }
-    for (const [domain, dependency] of Object.entries(domainDependencies)) {
-      if (dependency.dependentChallenges.some(dep => dep.includes(challenge.name) || dep.includes(challenge.key))) {
-        challengeDependencies.push({ ...dependency, key: domain, missing: !preconditionResults[domain] })
-      }
-    }
-
-    challengeRecords.push({
-      key: challenge.key,
-      name: challenge.name,
-      category: challenge.category,
-      tags: (tags != null) ? tags.join(',') : undefined,
-      // todo(@J12934) currently missing the 'not available' text. Needs changes to the model and utils functions
-      description: isChallengeEnabled ? description : (description + ' <em>(This challenge is <strong>potentially harmful</strong> on ' + disabledBecause + '!)</em>'),
-      difficulty: challenge.difficulty,
-      solved: false,
-      mitigationUrl: showMitigations ? challenge.mitigationUrl : null,
-      disabledEnv: disabledBecause,
-      tutorialOrder: (challenge.tutorial != null) ? challenge.tutorial.order : null,
-      codingChallengeStatus: 0,
-      hasCodingChallenge
-    })
-
-    if (challengeDependencies.length > 0) {
-      pendingDependencies.push({ challengeKey: challenge.key, deps: challengeDependencies })
-    }
-    if (showHints && challenge.hints?.length > 0) {
-      pendingHints.push({ challengeKey: challenge.key, hints: challenge.hints })
-    }
-  }
-
-  try {
-    const createdChallenges = await ChallengeModel.bulkCreate(challengeRecords)
-    for (const challenge of createdChallenges) {
-      datacache.challenges[challenge.key] = challenge
-    }
-  } catch (err) {
-    logger.error(`Could not bulk insert Challenges: ${utils.getErrorMessage(err)}`)
-    return
-  }
-
-  if (pendingDependencies.length > 0) {
-    const allDependencyRecords = pendingDependencies.flatMap(({ challengeKey, deps }) =>
-      deps.map(dep => ({
-        ChallengeId: datacache.challenges[challengeKey].id,
-        name: dep.dependency,
-        documentation: dep.documentation,
-        key: dep.key,
-        missing: dep.missing
-      }))
-    )
-    try {
-      await ChallengeDependencyModel.bulkCreate(allDependencyRecords)
-    } catch (err) {
-      logger.error(`Could not bulk insert ChallengeDependencies: ${utils.getErrorMessage(err)}`)
-    }
-  }
-
-  if (pendingHints.length > 0) {
-    const allHintRecords = pendingHints.flatMap(({ challengeKey, hints }) =>
-      hints.map((hint, index) => ({
-        ChallengeId: datacache.challenges[challengeKey].id,
-        text: hint.replace(/OWASP Juice Shop/, `${config.get<string>('application.name')}`)
-          .replace('http://htmledit.squarefree.com', config.get<string>('challenges.overwriteUrlForCsrfChallenge')),
-        order: index + 1,
-        unlocked: false
-      }))
-    )
-    try {
-      await HintModel.bulkCreate(allHintRecords)
-    } catch (err) {
-      logger.error(`Could not bulk insert Hints: ${utils.getErrorMessage(err)}`)
-    }
   }
 }
 
@@ -392,7 +264,7 @@ async function createProducts () {
     return product
   })
 
-  // add Challenge specific information
+  // products with special roles in the shop
   const christmasChallengeProduct = products.find(({ useForChristmasSpecialChallenge }) => useForChristmasSpecialChallenge)
   const pastebinLeakChallengeProduct = products.find(({ keywordsForPastebinDataLeakChallenge }) => keywordsForPastebinDataLeakChallenge)
   const tamperingChallengeProduct = products.find(({ urlForProductTamperingChallenge }) => urlForProductTamperingChallenge)
@@ -439,12 +311,6 @@ async function createProducts () {
             if (useForChristmasSpecialChallenge) { datacache.products.christmasSpecial = persistedProduct }
             if (urlForProductTamperingChallenge) {
               datacache.products.osaft = persistedProduct
-              await datacache.challenges.changeProductChallenge.update({
-                description: customizeChangeProductChallenge(
-                  datacache.challenges.changeProductChallenge.description,
-                  config.get('challenges.overwriteUrlForProductTamperingChallenge'),
-                  persistedProduct)
-              })
             }
             if (deletedDate) void deleteProduct(persistedProduct.id) // TODO Rename into "isDeleted" or "deletedFlag" in config for v14.x release
           } else {
@@ -469,12 +335,6 @@ async function createProducts () {
           )
     )
   )
-
-  function customizeChangeProductChallenge (description: string, customUrl: string, customProduct: Product) {
-    let customDescription = description.replace(/OWASP SSL Advanced Forensic Tool \(O-Saft\)/g, customProduct.name)
-    customDescription = customDescription.replace('https://owasp.slack.com', customUrl)
-    return customDescription
-  }
 }
 
 async function createBaskets () {

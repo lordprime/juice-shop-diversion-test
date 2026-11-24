@@ -3,7 +3,6 @@ import type { BasketModel } from '@juice-shop/models/basket'
 import type { BasketItemModel } from '@juice-shop/models/basketitem'
 import type { CaptchaModel } from '@juice-shop/models/captcha'
 import type { CardModel } from '@juice-shop/models/card'
-import type { ChallengeModel } from '@juice-shop/models/challenge'
 import type { DeliveryModel } from '@juice-shop/models/delivery'
 import type { MemoryModel } from '@juice-shop/models/memory'
 import type { ProductModel } from '@juice-shop/models/product'
@@ -11,8 +10,6 @@ import type { RecycleModel } from '@juice-shop/models/recycle'
 import type { SecurityAnswerModel } from '@juice-shop/models/securityAnswer'
 import type { SecurityQuestionModel } from '@juice-shop/models/securityQuestion'
 import type { UserModel } from '@juice-shop/models/user'
-
-export type Challenge = ChallengeModel
 
 export type User = UserModel
 

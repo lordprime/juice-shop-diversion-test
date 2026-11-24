@@ -14,19 +14,6 @@ import semver from 'semver'
 import portscanner from 'portscanner'
 import validateDependencies from './validateDependencies'
 
-export interface Dependency {
-  dependency: string
-  documentation: string
-  dependentChallenges: string[]
-  missing?: boolean
-}
-
-export const variableDependencies: Record<string, Dependency> = {}
-
-export const domainDependencies: Record<string, Dependency> = {}
-
-export const preconditionResults: Record<string, boolean> = {}
-
 let resolvePreconditionsReady: () => void
 export const preconditionsReady = new Promise<void>((resolve) => {
   resolvePreconditionsReady = resolve
@@ -49,7 +36,6 @@ const validatePreconditions = async ({ exitOnFailure = true } = {}) => {
     checkIfPortIsAvailable(process.env.PORT ?? config.get<number>('server.port'))
   ])
   const asyncConditions = asyncResults.every(condition => condition)
-
 
   resolvePreconditionsReady()
 
@@ -101,11 +87,6 @@ export const checkIfEnvironmentVariableExists = (varName: string) => {
     return true
   }
   logger.warn(`Environment variable ${colors.bold(varName)} is not present (${colors.yellow('WARNING')})`)
-  if (variableDependencies[varName]) {
-    variableDependencies[varName].dependentChallenges.forEach((dependency: string) => {
-      logger.warn(`${colors.italic(dependency)} will not work as intended without a valid ${colors.bold(varName)}`)
-    })
-  }
   return false
 }
 

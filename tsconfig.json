@@ -26,7 +26,6 @@
     ]
   },
   "include": [
-    "cypress/**/*.ts",
     "data/**/*.ts",
     "lib/**/*.ts",
     "lib/**/*.js",
@@ -35,7 +34,6 @@
     "test/**/*.ts",
     "views/**/*.ts",
     "views/**/*.js",
-    "rsn/**/*.ts",
     "*.ts"
   ],
   "exclude": [
@@ -44,8 +42,6 @@
     "dist",
     "build",
     "vagrant",
-    "data/static/codefixes/**",
-    "test/cypress/**",
     "**/*.d.ts"
   ]
 }

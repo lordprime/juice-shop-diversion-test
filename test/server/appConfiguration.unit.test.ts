@@ -20,5 +20,4 @@ void describe('appConfiguration', () => {
     const returnedConfig = res.json.mock.calls[0].arguments[0].config
     assert.ok(returnedConfig.application != null)
   })
-
 })

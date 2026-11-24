@@ -5,12 +5,9 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 
-import * as challengeUtils from '../lib/challengeUtils'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import { UserModel } from '../models/user'
 import * as utils from '../lib/utils'
-import config from 'config'
 
 export function updateUserProfile () {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -27,13 +24,6 @@ export function updateUserProfile () {
         next(new Error('User not found'))
         return
       }
-
-      challengeUtils.solveIf(challenges.csrfChallenge, () => {
-        const url = config.get<string>('challenges.overwriteUrlForCsrfChallenge')
-        return ((req.headers.origin?.includes('://' + url.replace(/^https?:\/\//, ''))) ??
-          (req.headers.referer?.includes('://' + url.replace(/^https?:\/\//, '')))) &&
-          req.body.username !== user.username
-      })
 
       const savedUser = await user.update({ username: req.body.username })
       const userWithStatus = utils.queryResultToJson(savedUser)

@@ -8,12 +8,9 @@ import { BasketModelInit } from './basket'
 import { BasketItemModelInit } from './basketitem'
 import { CaptchaModelInit } from './captcha'
 import { CardModelInit } from './card'
-import { ChallengeModelInit } from './challenge'
-import { ChallengeDependencyModelInit } from './challengeDependency'
 import { ComplaintModelInit } from './complaint'
 import { DeliveryModelInit } from './delivery'
 import { FeedbackModelInit } from './feedback'
-import { HintModelInit } from './hint'
 import { ImageCaptchaModelInit } from './imageCaptcha'
 import { MemoryModelInit } from './memory'
 import { PrivacyRequestModelInit } from './privacyRequests'
@@ -49,12 +46,9 @@ function initModels (seq: Sequelize) {
   BasketItemModelInit(seq)
   CaptchaModelInit(seq)
   CardModelInit(seq)
-  ChallengeModelInit(seq)
-  ChallengeDependencyModelInit(seq)
   ComplaintModelInit(seq)
   DeliveryModelInit(seq)
   FeedbackModelInit(seq)
-  HintModelInit(seq)
   ImageCaptchaModelInit(seq)
   MemoryModelInit(seq)
   PrivacyRequestModelInit(seq)
