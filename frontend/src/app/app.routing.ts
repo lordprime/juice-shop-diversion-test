@@ -38,12 +38,6 @@ import { DeliveryMethodComponent } from './delivery-method/delivery-method.compo
 import { PhotoWallComponent } from './photo-wall/photo-wall.component'
 import { DeluxeUserComponent } from './deluxe-user/deluxe-user.component'
 import { AccountingGuard, AdminGuard, LoginGuard } from './app.guard'
-import { ScoreBoardComponent } from './score-board/score-board.component'
-
-const loadCodingChallenge = async () => {
-  const module = await import('./coding-challenge-page/coding-challenge-page.component')
-  return module.CodingChallengePageComponent
-}
 
 const loadRecycleComponent = async () => {
   const module = await import('./recycle/recycle.component')
@@ -161,14 +155,6 @@ const routes: Routes = [
     component: SearchResultComponent
   },
   {
-    path: 'hacking-instructor',
-    component: SearchResultComponent
-  },
-  { // vuln-code-snippet neutral-line scoreBoardChallenge
-    path: 'score-board', // vuln-code-snippet vuln-line scoreBoardChallenge
-    component: ScoreBoardComponent // vuln-code-snippet neutral-line scoreBoardChallenge
-  }, // vuln-code-snippet neutral-line scoreBoardChallenge
-  {
     path: 'track-result',
     component: TrackResultComponent
   },
@@ -219,10 +205,6 @@ const routes: Routes = [
     matcher: tokenMatcher, // vuln-code-snippet vuln-line tokenSaleChallenge
     component: TokenSaleComponent // vuln-code-snippet neutral-line tokenSaleChallenge
   }, // vuln-code-snippet neutral-line tokenSaleChallenge
-  {
-    path: 'coding-challenge/:challengeKey',
-    loadComponent: async () => await loadCodingChallenge()
-  },
   {
     path: '403',
     component: ErrorPageComponent

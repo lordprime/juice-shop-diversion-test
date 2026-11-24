@@ -20,4 +20,13 @@ void describe('appConfiguration', () => {
     const returnedConfig = res.json.mock.calls[0].arguments[0].config
     assert.ok(returnedConfig.application != null)
   })
+
+  void it('should publish only the server and application settings', () => {
+    req = {}
+    res = { json: mock.fn() }
+
+    retrieveAppConfiguration()(req, res)
+    const returnedConfig = res.json.mock.calls[0].arguments[0].config
+    assert.deepEqual(Object.keys(returnedConfig).sort(), ['application', 'server'])
+  })
 })

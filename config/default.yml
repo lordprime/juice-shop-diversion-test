@@ -10,7 +10,7 @@ application:
   theme: bluegrey-lightgreen # Options: bluegrey-lightgreen blue-lightblue deeppurple-amber indigo-pink pink-bluegrey purple-green deeporange-indigo lime-green neon-fire
   showVersionNumber: true
   showGitHubLinks: true
-  localBackupEnabled: true
+  localBackupEnabled: false
   numberOfRandomFakeUsers: 0
   altcoinName: Juicycoin
   privacyContactEmail: donotreply@owasp-juice.shop
@@ -65,10 +65,6 @@ application:
       - { uri: 'http://192.168.99.100:4200', proxy: 'https://localmac.owasp-juice.shop' }
       - { uri: 'http://penguin.termina.linux.test:3000', proxy: 'https://localchromeos.owasp-juice.shop' }
       - { uri: 'http://penguin.termina.linux.test:4200', proxy: 'https://localchromeos.owasp-juice.shop' }
-hackingInstructor:
-  isEnabled: true
-  avatarImage: JuicyBot.png
-  hintPlaybackSpeed: normal # Options: faster fast normal slow slower
 products:
   -
     name: 'Apple Juice (1000ml)'

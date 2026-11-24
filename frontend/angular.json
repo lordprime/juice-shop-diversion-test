@@ -40,8 +40,6 @@
             ],
             "allowedCommonJsDependencies": [
 
-              "socket.io-client",
-              "socket.io-parser",
               "debug",
               "bn.js",
               "aes-js",
@@ -49,11 +47,8 @@
               "bech32",
               "hash.js",
               "eventemitter3",
-              "ethers/lib/ethers",
-              "ethers/lib/utils",
               "js-sha3",
-              "qrcode",
-              "@wagmi/core"
+              "qrcode"
             ],
             "scripts": [
               "node_modules/cookieconsent/build/cookieconsent.min.js"
@@ -106,8 +101,7 @@
             "setupFiles": ["src/test-setup.ts"],
             "runnerConfig": true,
             "watch": false,
-            "coverage": false,
-            "coverageExclude": ["src/hacking-instructor/**/*"]
+            "coverage": false
           },
           "configurations": {
             "coverage": {
@@ -120,8 +114,7 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "src/app/**/*.ts",
-              "src/hacking-instructor/**/*.ts"
+              "src/app/**/*.ts"
             ]
           }
         }

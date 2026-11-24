@@ -39,11 +39,6 @@ export interface Config {
       nftUrl: string
       questionnaireUrl: string
     }
-    chatBot: {
-      name: string
-      avatar: string
-      sampleQuestions: string[]
-    }
     recyclePage: {
       topProductImage: string
       bottomProductImage: string
@@ -75,31 +70,6 @@ export interface Config {
     googleOauth: {
       clientId: string
       authorizedRedirects: any[]
-    }
-  }
-  challenges: {
-    showSolvedNotifications: boolean
-    showHints: boolean
-    showMitigations: boolean
-    codingChallengesEnabled: string
-    restrictToTutorialsFirst: boolean
-    safetyMode: string
-    overwriteUrlForProductTamperingChallenge: string
-    overwriteUrlForCsrfChallenge: string
-  }
-  hackingInstructor: {
-    isEnabled: boolean
-    avatarImage: string
-  }
-  products: any[]
-  memories: any[]
-  ctf: {
-    showFlagsInNotifications: boolean
-    showCountryDetailsInNotifications: string
-    countryMapping: any[]
-    systemWideNotifications?: {
-      url?: string
-      pollFrequencySeconds?: number
     }
   }
 }

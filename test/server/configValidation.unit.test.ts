@@ -240,8 +240,7 @@ void describe('configValidation', () => {
         domain: 'juice-b.ox',
         name: 'OWASP Juice Box',
         welcomeBanner: { showOnFirstStart: false }
-      },
-      hackingInstructor: { avatarImage: 'juicyEvilWasp.png' }
+      }
     }
 
     assert.equal(checkConfigSchema(config), true)
@@ -267,8 +266,7 @@ void describe('configValidation', () => {
         domain: 42,
         id: 'OWASP Juice Box',
         welcomeBanner: { showOnFirstStart: 'yes' }
-      },
-      hackingInstructor: { avatarImage: true }
+      }
     }
 
     assert.equal(checkConfigSchema(config), false)

@@ -91,12 +91,6 @@ export const ApplicationSchema = z.object({
   googleOauth: GoogleOauthSchema
 })
 
-export const HackingInstructorSchema = z.object({
-  isEnabled: z.boolean(),
-  avatarImage: z.string(),
-  hintPlaybackSpeed: z.enum(['faster', 'fast', 'normal', 'slow', 'slower'])
-})
-
 export const AlternateImageSchema = z.union([
   z.object({
     file: z.string(),
@@ -143,7 +137,6 @@ export const MemorySchema = z.object({
 export const AppConfigSchema = z.object({
   server: ServerSchema,
   application: ApplicationSchema,
-  hackingInstructor: HackingInstructorSchema,
   products: z.array(ProductSchema),
   memories: z.array(MemorySchema)
 })
@@ -177,14 +170,12 @@ export const ValidationSchema = z.preprocess(dropNulls, z.object({
     easterEggPlanet: EasterEggPlanetSchema.partial().optional(),
     googleOauth: GoogleOauthSchema.partial().optional()
   }).optional(),
-  hackingInstructor: HackingInstructorSchema.partial().optional(),
   products: z.array(ProductSchema.partial()).optional(),
   memories: z.array(MemorySchema.partial()).optional()
 }))
 
 export type ServerConfig = z.infer<typeof ServerSchema>
 export type ApplicationConfig = z.infer<typeof ApplicationSchema>
-export type HackingInstructorConfig = z.infer<typeof HackingInstructorSchema>
 export type Product = z.infer<typeof ProductSchema>
 export type AlternateImage = z.infer<typeof AlternateImageSchema>
 export type Memory = z.infer<typeof MemorySchema>

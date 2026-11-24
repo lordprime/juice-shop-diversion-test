@@ -9,7 +9,6 @@
 @use './styles/theme' as *;
 @use './styles/variables' as *;
 
-@use './hacking-instructor/hacking-instructor.scss';
 
 @mixin link-theme($theme) {
   a:link,
@@ -318,8 +317,6 @@
     --mat-slide-toggle-unselected-track-color: #{color.adjust($prim, $lightness: 5%)};
   }
 }
-
-$bg-hacking-instructor: rgba(0, 0, 0, 0.3);
 
 .deeppurple-amber-theme {
   @include custom-components-theme($deeppurple-amber-theme);
@@ -787,13 +784,6 @@ $bg-hacking-instructor: rgba(0, 0, 0, 0.3);
     height: 0;
     overflow: hidden;
   }
-}
-
-#hacking-instructor code {
-  background-color: $bg-hacking-instructor;
-  border-radius: 1px;
-  font-family: monospace;
-  padding: 0 $space-2xs;
 }
 
 .cm-editor {

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-import fs from 'node:fs'
 import config from 'config'
 import * as utils from '../utils'
 // @ts-expect-error FIXME due to non-existing type definitions for replace
@@ -29,20 +28,10 @@ const customizeApplication = async () => {
     void customizePromotionVideo()
     void customizePromotionSubtitles()
   }
-  if (config.get('hackingInstructor')) {
-    void customizeHackingInstructorAvatar()
-  }
 }
 
 const customizeLogo = async () => {
   await retrieveCustomFile('application.logo', 'frontend/dist/frontend/assets/public/images')
-}
-
-const customizeHackingInstructorAvatar = async () => {
-  const avatarImage = await retrieveCustomFile('hackingInstructor.avatarImage', 'frontend/dist/frontend/assets/public/images')
-  if (avatarImage) {
-    fs.copyFileSync('frontend/dist/frontend/assets/public/images/' + avatarImage, 'frontend/dist/frontend/assets/public/images/hackingInstructor.png')
-  }
 }
 
 const customizeFavicon = async () => {

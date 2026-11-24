@@ -72,35 +72,12 @@ describe('WelcomeBannerComponent', () => {
         expect(matDialogRef.close).toHaveBeenCalled()
     })
 
-    it('should dismiss and add cookie when starting hacking instructor', () => {
-        vi.spyOn(console, 'log').mockImplementation(() => {})
-        vi.spyOn(component as any, 'launchHackingInstructor').mockImplementation(() => {})
-        component.startHackingInstructor()
-        expect(cookieService.get('welcomebanner_status')).toBe('dismiss')
-        expect(matDialogRef.close).toHaveBeenCalled()
-    })
-
     it('should set banner properties as obtained from configuration', () => {
         configurationService.getApplicationConfiguration.mockReturnValue(of({ application: { welcomeBanner: { title: 'Title', message: 'Message' } } }))
         component.ngOnInit()
 
         expect(component.title).toBe('Title')
         expect(component.message).toBe('Message')
-    })
-
-    it('should show hacking instructor if enabled in configuration', () => {
-        configurationService.getApplicationConfiguration.mockReturnValue(of({ hackingInstructor: { isEnabled: true } }))
-        component.ngOnInit()
-
-        expect(component.showHackingInstructor).toBe(true)
-    })
-
-    it('should prevent dismissing banner in tutorial mode', () => {
-        configurationService.getApplicationConfiguration.mockReturnValue(of({ challenges: { restrictToTutorialsFirst: true }, hackingInstructor: { isEnabled: true } }))
-        component.ngOnInit()
-
-        expect(component.dialogRef.disableClose).toBe(true)
-        expect(component.showDismissBtn).toBe(false)
     })
 
     it('should log error on failure in retrieving configuration from backend', () => {
@@ -110,50 +87,7 @@ describe('WelcomeBannerComponent', () => {
         expect(console.log).toHaveBeenCalledWith('Error')
     })
 
-    describe('startHackingInstructor', () => {
-        it('should close the welcome banner, log the start hint and launch the Score Board tutorial', () => {
-            const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-            const launchSpy = vi.spyOn(component as any, 'launchHackingInstructor').mockImplementation(() => {})
-            component.startHackingInstructor()
-            expect(matDialogRef.close).toHaveBeenCalled()
-            expect(logSpy).toHaveBeenCalledWith('Starting instructions for challenge "Score Board"')
-            expect(launchSpy).toHaveBeenCalledWith('Score Board')
-        })
-    })
-
     describe('template rendering', () => {
-        it('should render the hacking instructor button only when showHackingInstructor is true', () => {
-            component.showHackingInstructor = true
-            component.showDismissBtn = true
-            fixture.detectChanges()
-            const buttons = (fixture.nativeElement as HTMLElement).querySelectorAll('button')
-            expect(buttons.length).toBe(2)
-        })
-
-        it('should hide the hacking instructor button when showHackingInstructor is false', () => {
-            component.showHackingInstructor = false
-            component.showDismissBtn = true
-            fixture.detectChanges()
-            const buttons = (fixture.nativeElement as HTMLElement).querySelectorAll('button')
-            expect(buttons.length).toBe(1)
-            expect((fixture.nativeElement as HTMLElement).querySelector('button.close-dialog')).toBeTruthy()
-        })
-
-        it('should hide the dismiss button when showDismissBtn is false', () => {
-            component.showHackingInstructor = true
-            component.showDismissBtn = false
-            fixture.detectChanges()
-            expect((fixture.nativeElement as HTMLElement).querySelector('button.close-dialog')).toBeNull()
-        })
-
-        it('should call startHackingInstructor when the hacking instructor button is clicked', () => {
-            component.showHackingInstructor = true
-            fixture.detectChanges()
-            const spy = vi.spyOn(component, 'startHackingInstructor').mockImplementation(() => {})
-            const hackBtn = (fixture.nativeElement as HTMLElement).querySelector('button') as HTMLButtonElement
-            hackBtn.click()
-            expect(spy).toHaveBeenCalled()
-        })
 
         it('should render the configured title and message (interpreted as HTML)', () => {
             component.title = 'Hello Juice'
