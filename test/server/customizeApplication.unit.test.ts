@@ -13,7 +13,7 @@ void describe('customizeApplication', () => {
   void it('should not return a filename when a custom file download fails', async (t) => {
     t.mock.method(config, 'get', () => 'https://example.com/avatar.png')
 
-    const file = await retrieveCustomFile('application.chatBot.avatar', 'frontend/dist/frontend/assets/public/images', async () => false)
+    const file = await retrieveCustomFile('application.logo', 'frontend/dist/frontend/assets/public/images', async () => false)
 
     assert.equal(file, undefined)
   })

@@ -8,7 +8,7 @@ import assert from 'node:assert/strict'
 import net from 'node:net'
 import semver from 'semver'
 import { engines as supportedEngines } from './../../package.json'
-import { checkIfRunningOnSupportedNodeVersion, checkIfPortIsAvailable, checkIfEnvironmentVariableExists, isOllamaUrl, checkIfLlmModelAvailable, checkIfDomainReachable } from '../../lib/startup/validatePreconditions'
+import { checkIfRunningOnSupportedNodeVersion, checkIfPortIsAvailable, checkIfEnvironmentVariableExists } from '../../lib/startup/validatePreconditions'
 
 void describe('preconditionValidation', () => {
   void describe('checkIfRunningOnSupportedNodeVersion', () => {
@@ -91,104 +91,4 @@ void describe('preconditionValidation', () => {
     })
   })
 
-  void describe('isOllamaUrl', () => {
-    void it('should detect URL with Ollama default port 11434', () => {
-      assert.equal(isOllamaUrl('http://localhost:11434/v1'), true)
-      assert.equal(isOllamaUrl('http://127.0.0.1:11434/v1'), true)
-      assert.equal(isOllamaUrl('https://myserver.example.com:11434/v1'), true)
-    })
-
-    void it('should detect URL with ollama hostname', () => {
-      assert.equal(isOllamaUrl('http://ollama:11434/v1'), true)
-      assert.equal(isOllamaUrl('http://ollama/v1'), true)
-    })
-
-    void it('should detect URL with /ollama path prefix', () => {
-      assert.equal(isOllamaUrl('http://myserver.example.com/ollama/v1'), true)
-    })
-
-    void it('should not flag non-Ollama URLs', () => {
-      assert.equal(isOllamaUrl('http://localhost:8080/v1'), false)
-      assert.equal(isOllamaUrl('https://api.openai.com/v1'), false)
-    })
-
-    void it('should handle invalid URLs gracefully', () => {
-      assert.equal(isOllamaUrl('not-a-url'), false)
-      assert.equal(isOllamaUrl(''), false)
-    })
-  })
-
-  void describe('checkIfOllamaModelAvailable', () => {
-    let fetchStub: any
-
-    beforeEach(() => {
-      fetchStub = mock.method(global, 'fetch')
-    })
-
-    afterEach(() => {
-      fetchStub.mock.restore()
-    })
-
-    void it('should succeed when model is listed in Ollama response', async () => {
-      fetchStub.mock.mockImplementation(async () => ({ ok: true, json: async () => ({ data: [{ id: 'qwen3.5:9b' }, { id: 'llama3:8b' }] }) }))
-      await checkIfLlmModelAvailable('http://localhost:11434/v1')
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-
-    void it('should warn when configured model tag does not match pulled model tag', async () => {
-      fetchStub.mock.mockImplementation(async () => ({ ok: true, json: async () => ({ data: [{ id: 'qwen3.5:9b-q4' }] }) }))
-      await checkIfLlmModelAvailable('http://localhost:11434/v1')
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-
-    void it('should warn when model is not in the available list', async () => {
-      fetchStub.mock.mockImplementation(async () => ({ ok: true, json: async () => ({ data: [{ id: 'llama3:8b' }, { id: 'mistral:7b' }] }) }))
-      await checkIfLlmModelAvailable('http://localhost:11434/v1')
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-
-    void it('should handle empty model list', async () => {
-      fetchStub.mock.mockImplementation(async () => ({ ok: true, json: async () => ({ data: [] }) }))
-      await checkIfLlmModelAvailable('http://localhost:11434/v1')
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-
-    void it('should handle non-ok response gracefully', async () => {
-      fetchStub.mock.mockImplementation(async () => ({ ok: false, status: 500 }))
-      await checkIfLlmModelAvailable('http://localhost:11434/v1')
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-
-    void it('should handle fetch error gracefully', async () => {
-      fetchStub.mock.mockImplementation(async () => { throw new Error('Connection refused') })
-      await checkIfLlmModelAvailable('http://localhost:11434/v1')
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-  })
-
-  void describe('checkIfDomainReachable', () => {
-    let fetchStub: any
-
-    beforeEach(() => {
-      fetchStub = mock.method(global, 'fetch')
-    })
-
-    afterEach(() => {
-      fetchStub.mock.restore()
-    })
-
-    void it('should return true if domain is reachable', async () => {
-      fetchStub.mock.mockImplementation(async () => ({ ok: true }))
-      const success = await checkIfDomainReachable('https://www.alchemy.com/')
-      assert.equal(success, true)
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-
-    void it('should return false and log warnings if domain is not reachable', async () => {
-      fetchStub.mock.mockImplementation(async () => { throw new Error('Network error') })
-      const success = await checkIfDomainReachable('https://www.alchemy.com/')
-      assert.equal(success, false)
-      assert.equal(fetchStub.mock.calls.length, 1)
-    })
-  })
 })

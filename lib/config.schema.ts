@@ -8,15 +8,6 @@ import { CHALLENGE_KEYS, type ChallengeKey } from '../models/challenge'
 
 // -- Application sub-schemas --
 
-const ChatBotSchema = z.object({
-  name: z.string(),
-  avatar: z.string(),
-  model: z.string(),
-  llmApiUrl: z.string(),
-  llmMaxRetries: z.number().optional(),
-  sampleQuestions: z.array(z.string()).optional()
-})
-
 const SocialSchema = z.object({
   twitterUrl: z.string(),
   facebookUrl: z.string(),
@@ -91,7 +82,6 @@ export const ApplicationSchema = z.object({
   altcoinName: z.string(),
   privacyContactEmail: z.string(),
   customMetricsPrefix: z.string(),
-  chatBot: ChatBotSchema,
   social: SocialSchema,
   recyclePage: RecyclePageSchema,
   welcomeBanner: WelcomeBannerSchema,
@@ -210,7 +200,6 @@ const dropNulls = (value: unknown): unknown => {
 export const ValidationSchema = z.preprocess(dropNulls, z.object({
   server: ServerSchema.partial().optional(),
   application: ApplicationSchema.partial().extend({
-    chatBot: ChatBotSchema.partial().optional(),
     social: SocialSchema.partial().optional(),
     recyclePage: RecyclePageSchema.partial().optional(),
     welcomeBanner: WelcomeBannerSchema.partial().optional(),

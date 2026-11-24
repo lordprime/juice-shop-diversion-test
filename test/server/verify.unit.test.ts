@@ -359,18 +359,4 @@ void describe('verify', () => {
       assert.equal(challenges.iacLeakedKeyChallenge.solved, false)
     })
   })
-
-  void describe('checkSystemPromptSimilarity', () => {
-    void it('should return true if similarity is above threshold', () => {
-      const s1 = 'This is a test'
-      const s2 = 'This is a test'
-      assert.ok(verify.checkSystemPromptSimilarity(s1, s2))
-    })
-
-    void it('should return false if similarity is below threshold', () => {
-      const s1 = 'This is a test'
-      const s2 = 'Something completely different'
-      assert.ok(!verify.checkSystemPromptSimilarity(s1, s2, 0.9))
-    })
-  })
 })

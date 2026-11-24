@@ -32,20 +32,10 @@ const customizeApplication = async () => {
   if (config.get('hackingInstructor')) {
     void customizeHackingInstructorAvatar()
   }
-  if (config.get('application.chatBot')) {
-    void customizeChatbotAvatar()
-  }
 }
 
 const customizeLogo = async () => {
   await retrieveCustomFile('application.logo', 'frontend/dist/frontend/assets/public/images')
-}
-
-const customizeChatbotAvatar = async () => {
-  const avatarImage = await retrieveCustomFile('application.chatBot.avatar', 'frontend/dist/frontend/assets/public/images')
-  if (avatarImage) {
-    fs.copyFileSync('frontend/dist/frontend/assets/public/images/' + avatarImage, 'frontend/dist/frontend/assets/public/images/chatbotAvatar.png')
-  }
 }
 
 const customizeHackingInstructorAvatar = async () => {

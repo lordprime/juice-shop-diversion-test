@@ -18,7 +18,6 @@ import { ComplaintModel } from '../models/complaint'
 import { FeedbackModel } from '../models/feedback'
 import * as security from '../lib/insecurity'
 import * as utils from '../lib/utils'
-import { buildSystemPrompt } from './chat'
 
 export const emptyUserRegistration = () => (req: Request, res: Response, next: NextFunction) => {
   challengeUtils.solveIf(challenges.emptyUserRegistration, () => {
@@ -207,9 +206,6 @@ export const databaseRelatedChallenges = () => (req: Request, res: Response, nex
   if (challengeUtils.notSolved(challenges.vulnerableDockerImageChallenge)) {
     vulnerableDockerImageChallenge()
   }
-  if (challengeUtils.notSolved(challenges.systemPromptExtractionChallenge)) {
-    void systemPromptExtractionChallenge()
-  }
   next()
 }
 
@@ -358,20 +354,4 @@ function dangerousIngredients () {
     .map((keyword) => {
       return { [Op.like]: `%${keyword}%` }
     })
-}
-
-export function checkSystemPromptSimilarity (submission: string, reference: string, threshold = 0.25): boolean {
-  const score = utils.diceCoefficient((submission ?? '').toLowerCase().trim(), reference.toLowerCase().trim(), 3)
-  return score >= threshold
-}
-
-async function systemPromptExtractionChallenge (): Promise<void> {
-  const reference = buildSystemPrompt().toLowerCase().trim()
-  const complaints = await ComplaintModel.findAll().catch(() => [])
-  for (const complaint of complaints) {
-    if (checkSystemPromptSimilarity(complaint.message ?? '', reference)) {
-      challengeUtils.solveIf(challenges.systemPromptExtractionChallenge, () => true)
-      return
-    }
-  }
 }

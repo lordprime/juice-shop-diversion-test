@@ -21,26 +21,9 @@ export interface Dependency {
   missing?: boolean
 }
 
-export const variableDependencies: Record<string, Dependency> = {
-  ALCHEMY_API_KEY: {
-    dependency: 'Alchemy API Key',
-    documentation: 'https://howto-web3.owasp-juice.shop',
-    dependentChallenges: ['"Mint the Honey Pot" challenge', '"Wallet Depletion" challenge']
-  }
-}
+export const variableDependencies: Record<string, Dependency> = {}
 
-export const domainDependencies: Record<string, Dependency> = {
-  'https://www.alchemy.com/': {
-    dependency: 'Alchemy API',
-    documentation: 'https://howto-web3.owasp-juice.shop',
-    dependentChallenges: ['"Mint the Honey Pot" challenge', '"Wallet Depletion" challenge']
-  },
-  [config.get<string>('application.chatBot.llmApiUrl')]: {
-    dependency: 'LLM API',
-    documentation: 'https://howto-llm.owasp-juice.shop',
-    dependentChallenges: ['"Chatbot Prompt Injection" challenge', '"Greedy Chatbot Manipulation" challenge', '"AI Debugging" challenge', '"System Prompt Extraction" challenge']
-  }
-}
+export const domainDependencies: Record<string, Dependency> = {}
 
 export const preconditionResults: Record<string, boolean> = {}
 
@@ -67,40 +50,6 @@ const validatePreconditions = async ({ exitOnFailure = true } = {}) => {
   ])
   const asyncConditions = asyncResults.every(condition => condition)
 
-  const alchemyDomainReachable = await checkIfDomainReachable('https://www.alchemy.com/')
-  const alchemyEnvVarExists = checkIfEnvironmentVariableExists('ALCHEMY_API_KEY')
-  preconditionResults['https://www.alchemy.com/'] = alchemyDomainReachable
-  preconditionResults.ALCHEMY_API_KEY = alchemyEnvVarExists
-  if (!alchemyDomainReachable || !alchemyEnvVarExists) {
-    logger.info(`Check ${colors.bold('https://howto-web3.owasp-juice.shop')} for instructions on how to set up and configure the Alchemy API`)
-  }
-  const llmApiUrl = config.get<string>('application.chatBot.llmApiUrl')
-  const llmApiReachable = await checkIfDomainReachable(llmApiUrl)
-  let llmApiKeyEnvVarExists = true
-  let llmModelAvailable = true
-  preconditionResults[llmApiUrl] = llmApiReachable
-  if (llmApiReachable) {
-    const llmModel = config.get<string>('application.chatBot.model')
-    llmModelAvailable = await checkIfLlmModelAvailable(llmApiUrl)
-    variableDependencies[llmModel] = {
-      dependency: 'LLM Model',
-      documentation: 'https://howto-llm.owasp-juice.shop',
-      dependentChallenges: ['"Chatbot Prompt Injection" challenge', '"Greedy Chatbot Manipulation" challenge', '"AI Debugging" challenge', '"System Prompt Extraction" challenge']
-    }
-    preconditionResults[llmModel] = llmModelAvailable
-    if (!isOllamaUrl(llmApiUrl)) {
-      variableDependencies.LLM_API_KEY = {
-        dependency: 'LLM API Key',
-        documentation: 'https://howto-llm.owasp-juice.shop',
-        dependentChallenges: ['"Chatbot Prompt Injection" challenge', '"Greedy Chatbot Manipulation" challenge', '"AI Debugging" challenge', '"System Prompt Extraction" challenge']
-      }
-      llmApiKeyEnvVarExists = checkIfEnvironmentVariableExists('LLM_API_KEY')
-      preconditionResults.LLM_API_KEY = llmApiKeyEnvVarExists
-    }
-  }
-  if (!llmApiReachable || !llmApiKeyEnvVarExists || !llmModelAvailable) {
-    logger.info(`Check ${colors.bold('https://howto-llm.owasp-juice.shop')} for instructions on how to set up and configure the LLM API`)
-  }
 
   resolvePreconditionsReady()
 
@@ -160,20 +109,6 @@ export const checkIfEnvironmentVariableExists = (varName: string) => {
   return false
 }
 
-export const checkIfDomainReachable = async (domain: string) => {
-  try {
-    await fetch(domain, { signal: AbortSignal.timeout(5000) })
-    logger.info(`Domain ${colors.bold(domain)} is reachable (${colors.green('SUCCESS')})`)
-    return true
-  } catch {
-    logger.warn(`Domain ${colors.bold(domain)} is not reachable (${colors.yellow('WARNING')})`)
-    domainDependencies[domain].dependentChallenges.forEach((dependency: string) => {
-      logger.warn(`${colors.italic(dependency)} will not work as intended without access to ${colors.bold(domain)}`)
-    })
-    return false
-  }
-}
-
 export const checkIfPortIsAvailable = async (port: number | string) => {
   const portNumber = parseInt(port.toString())
   return await new Promise((resolve, reject) => {
@@ -217,45 +152,6 @@ export const checkIfRequiredFilePatternExists = async (directory: string, patter
     return false
   } catch {
     logger.warn(`Required file matching ${colors.bold(String(pattern))} is missing (${colors.red('ERROR')})`)
-    return false
-  }
-}
-
-export const isOllamaUrl = (url: string): boolean => {
-  try {
-    const parsed = new URL(url)
-    return parsed.port === '11434' || parsed.hostname === 'ollama' || parsed.pathname.startsWith('/ollama')
-  } catch {
-    return false
-  }
-}
-
-export const checkIfLlmModelAvailable = async (llmApiUrl: string) => {
-  const model = config.get<string>('application.chatBot.model')
-  try {
-    const response = await fetch(`${llmApiUrl}/models`, { signal: AbortSignal.timeout(5000) })
-    if (!response.ok) return false
-    const body = await response.json() as { data?: Array<{ id: string }> }
-    const availableModels: string[] = (body.data ?? []).map((m: { id: string }) => m.id)
-    const modelFound = availableModels.some(
-      (available) => available === model || available.startsWith(`${model}:`) || model.startsWith(`${available}:`)
-    )
-    if (modelFound) {
-      logger.info(`LLM model ${colors.bold(model)} is available (${colors.green('SUCCESS')})`)
-      return true
-    } else {
-      logger.warn(`LLM model ${colors.bold(model)} is not available (${colors.yellow('WARNING')})`)
-      if (isOllamaUrl(llmApiUrl)) {
-        let pullModelMessage = `Pull the model with: ${colors.bold(`ollama pull ${model}`)}`
-        if (availableModels.length > 0) {
-          pullModelMessage += ` or configure an available model: ${colors.bold(availableModels.join(', '))}`
-        }
-        logger.info(pullModelMessage)
-      }
-      return false
-    }
-  } catch {
-    logger.warn(`Could not verify LLM model ${colors.bold(model)} availability (${colors.yellow('WARNING')})`)
     return false
   }
 }
