@@ -22,6 +22,7 @@ import { type Product } from './types'
 import logger from '../lib/logger'
 import type { Memory as MemoryConfig, Product as ProductConfig } from '../lib/config.schema'
 import config from 'config'
+import fs from 'node:fs'
 import * as utils from '../lib/utils'
 import type { StaticUser, StaticUserAddress, StaticUserCard } from './staticData'
 import { loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
@@ -55,8 +56,36 @@ export default async () => {
   }
 }
 
+// The administrator's password is chosen for each run by whoever starts the
+// shop and handed over on the file descriptor named in ADMIN_PASSWORD_FD, so it
+// never sits in a file or variable the shop's user can read later. Without one
+// the password is random and unknown. A bad hand-over stops the start. It is read
+// once; seeding again in the same process keeps the same password.
+let adminPassword: string | undefined
+
+function readAdminPassword (): string {
+  if (adminPassword !== undefined) {
+    return adminPassword
+  }
+  const fd = process.env.ADMIN_PASSWORD_FD
+  if (fd === undefined || fd === '') {
+    adminPassword = utils.randomHexString(32)
+    return adminPassword
+  }
+  if (!/^\d+$/.test(fd)) {
+    throw new Error('ADMIN_PASSWORD_FD must be a file descriptor number')
+  }
+  const password = fs.readFileSync(Number(fd), 'utf8').replace(/\r?\n$/, '')
+  if (!/^[\x21-\x7e]+$/.test(password)) {
+    throw new Error('The administrator password must be one word of printable characters')
+  }
+  adminPassword = password
+  return adminPassword
+}
+
 async function createUsers () {
   const users = await loadStaticUserData()
+  const passwordForAdmin = readAdminPassword()
 
   await Promise.all(
     users.map(async ({ username, email, password, customDomain, key, role, deletedFlag, profileImage, securityQuestion, feedback, address, card, totpSecret, lastLoginIp = '' }) => {
@@ -65,7 +94,7 @@ async function createUsers () {
         const user = await UserModel.create({
           username,
           email: completeEmail,
-          password,
+          password: password ?? passwordForAdmin,
           role,
           deluxeToken: role === security.roles.deluxe ? security.deluxeToken(completeEmail) : '',
           profileImage: `assets/public/images/uploads/${profileImage ?? (role === security.roles.admin ? 'defaultAdmin.png' : 'default.svg')}`,
@@ -73,7 +102,7 @@ async function createUsers () {
           lastLoginIp
         })
         datacache.users[key] = user
-        if (securityQuestion != null) await createSecurityAnswer(user.id, securityQuestion.id, securityQuestion.answer)
+        if (securityQuestion != null) await createSecurityAnswer(user.id, securityQuestion.id, securityQuestion.answer ?? utils.randomHexString(32))
         if (feedback != null) await createFeedback(user.id, feedback.comment, feedback.rating, user.email)
         if (deletedFlag) await deleteUser(user.id)
         if (address != null) await createAddresses(user.id, address)

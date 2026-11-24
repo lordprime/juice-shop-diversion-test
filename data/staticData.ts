@@ -12,7 +12,8 @@ export async function loadStaticData (file: string) {
 
 export interface StaticUser {
   email: string
-  password: string
+  // left out for the administrator, whose password is set at start
+  password?: string
   key: string
   role: 'admin' | 'customer' | 'deluxe' | 'accounting'
 
@@ -30,7 +31,8 @@ export interface StaticUser {
 }
 export interface StaticUserSecurityQuestion {
   id: number
-  answer: string
+  // left out for the administrator, whose answer nobody knows
+  answer?: string
 }
 export interface StaticUserFeedback {
   comment: string

@@ -1,11 +1,9 @@
 -
   email: admin
-  password: 'admin123'
   key: admin
   role: 'admin'
   securityQuestion:
     id: 2
-    answer: '@xI98PxDO+06!'
   feedback:
     comment: 'I love this shop! Best products in town! Highly recommended!'
     rating: 5
