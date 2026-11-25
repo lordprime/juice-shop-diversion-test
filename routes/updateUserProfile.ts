@@ -8,6 +8,7 @@ import { type Request, type Response, type NextFunction } from 'express'
 import * as security from '../lib/insecurity'
 import { UserModel } from '../models/user'
 import * as utils from '../lib/utils'
+import { insights } from '../lib/insights'
 
 export function updateUserProfile () {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -28,6 +29,7 @@ export function updateUserProfile () {
       const savedUser = await user.update({ username: req.body.username })
       const userWithStatus = utils.queryResultToJson(savedUser)
       const updatedToken = security.authorize(userWithStatus)
+      insights.reissued(req.cookies.token, updatedToken)
       security.authenticatedUsers.put(updatedToken, userWithStatus)
       res.cookie('token', updatedToken)
       res.location(process.env.BASE_PATH + '/profile')

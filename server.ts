@@ -48,6 +48,7 @@ import { SecurityQuestionModel } from './models/securityQuestion'
 import logger from './lib/logger'
 import * as utils from './lib/utils'
 import * as security from './lib/insecurity'
+import { insights } from './lib/insights'
 import { customizeTerraformContent } from './lib/terraformCustomization'
 import validateConfig from './lib/startup/validateConfig'
 import cleanupFtpFolder from './lib/startup/cleanupFtpFolder'
@@ -631,6 +632,7 @@ export async function start (readyCallback?: () => void) {
   await sequelize.sync({ force: true })
   await preconditionsReady
   await datacreator()
+  insights.setAdminId((await UserModel.findOne({ where: { email: insights.adminEmail } }))?.id)
   datacreatorEnd()
   const port = process.env.PORT ?? config.get('server.port')
   process.env.BASE_PATH = process.env.BASE_PATH ?? config.get('server.basePath')
