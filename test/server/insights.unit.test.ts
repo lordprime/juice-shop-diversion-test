@@ -167,6 +167,29 @@ void describe('SessionInsights', () => {
     await new Promise(resolve => setTimeout(resolve, 100))
   })
 
+  void it('tries again when the collector is not there yet or its queue is full', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'insights-'))
+    const late = new SessionInsights(path.join(dir, 'events.sock'), ADMIN)
+    late.setAdminId(1)
+    late.accepted('late', { data: { id: 1 } }, 'signature')
+    await new Promise(resolve => setTimeout(resolve, 150))
+    const notes: any[] = []
+    const server = net.createServer((conn) => {
+      let data = ''
+      conn.on('data', (chunk) => { data += chunk.toString() })
+      conn.on('end', () => { notes.push(JSON.parse(data)); conn.end('ok\n') })
+    })
+    await new Promise<void>((resolve) => server.listen(path.join(dir, 'events.sock'), resolve))
+    try {
+      const deadline = Date.now() + 3000
+      while (notes.length === 0 && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 20))
+      assert.deepEqual(notes.map(n => n.kind), ['privileged_session'])
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => { resolve() }))
+      fs.rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
   void it('carries on when the collector never answers', async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'insights-'))
     const silentPath = path.join(dir, 'silent.sock')

@@ -28,6 +28,10 @@ export class SessionInsights {
   static readonly MAX_REMEMBERED = 10000
   static readonly MAX_EMAIL_CHARS = 256
   static readonly ANSWER_TIMEOUT_MS = 5000
+  // A collector that is starting up, or whose queue is full, is tried again a few times.
+  static readonly CONNECT_ATTEMPTS = 6
+  static readonly RETRY_PAUSE_MS = 100
+  static readonly RETRY_CODES = new Set(['EAGAIN', 'ENOENT', 'ECONNREFUSED'])
 
   // SHA-256 digests only, never the tokens themselves
   private readonly verified = new Set<string>()
@@ -110,11 +114,21 @@ export class SessionInsights {
   }
 
   // One note, one connection. The shop never waits for it and never fails over it.
-  private send (note: Record<string, unknown>) {
+  private send (note: Record<string, unknown>, attempt = 1) {
     const socket = net.createConnection({ path: this.socketPath })
+    let connected = false
     socket.setTimeout(this.answerTimeoutMs, () => socket.destroy())
-    socket.on('error', () => { socket.destroy() })
-    socket.on('connect', () => { socket.end(JSON.stringify(note) + '\n') })
+    socket.on('error', (error: NodeJS.ErrnoException) => {
+      socket.destroy()
+      // only a connection that never opened is tried again: a note is sent at most once
+      if (!connected && attempt < SessionInsights.CONNECT_ATTEMPTS && SessionInsights.RETRY_CODES.has(error.code ?? '')) {
+        setTimeout(() => { this.send(note, attempt + 1) }, SessionInsights.RETRY_PAUSE_MS * attempt).unref()
+      }
+    })
+    socket.on('connect', () => {
+      connected = true
+      socket.end(JSON.stringify(note) + '\n')
+    })
     socket.on('data', () => { socket.destroy() })
   }
 }
