@@ -358,10 +358,9 @@ describe('SidenavComponent', () => {
             expect(compiled.querySelector('a[aria-label="Go to deluxe membership page"]')).toBeNull()
         })
 
-        it('should always render contact, AI chat, about and photo wall entries', () => {
+        it('should always render contact, about and photo wall entries', () => {
             const compiled: HTMLElement = fixture.nativeElement
             expect(compiled.querySelector('a[aria-label="Go to contact us page"]')).toBeTruthy()
-            expect(compiled.querySelector('a[aria-label="Go to AI chat page"]')).toBeTruthy()
             expect(compiled.querySelector('a[aria-label="Go to about us page"]')).toBeTruthy()
             expect(compiled.querySelector('a[aria-label="Go to photo wall"]')).toBeTruthy()
         })
