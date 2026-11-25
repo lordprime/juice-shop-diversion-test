@@ -350,9 +350,6 @@ describe('SearchResultComponent', () => {
         })
     })
 
-    describe('hacking instructor integration', () => {
-    })
-
     describe('auth and deluxe helpers', () => {
         it('should report isLoggedIn=false when no token is set', () => {
             localStorage.removeItem('token')

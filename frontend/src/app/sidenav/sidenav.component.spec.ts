@@ -210,12 +210,6 @@ describe('SidenavComponent', () => {
         })
     })
 
-    describe('socket subscription', () => {
-    })
-
-    describe('application configuration branches', () => {
-    })
-
     describe('navigation helpers', () => {
         it('should replace window.location with profile URL on goToProfilePage', () => {
             const replaceSpy = vi.fn()

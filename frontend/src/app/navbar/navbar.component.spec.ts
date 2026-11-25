@@ -462,9 +462,6 @@ describe('NavbarComponent', () => {
         })
     })
 
-    describe('score board status', () => {
-    })
-
     describe('miscellaneous behavior', () => {
         it('should update itemTotal when basket emits a new value', () => {
             component.ngOnInit()
