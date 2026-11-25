@@ -70,6 +70,14 @@ void describe('Server', () => {
     const res = await request(app)
       .get('/robots.txt')
     assert.equal(res.status, 200)
+    assert.equal(res.text, 'User-agent: *\nDisallow: /ftp\nDisallow: /changelog/')
+  })
+
+  void it('GET serves the changelog that robots.txt keeps crawlers out of', async () => {
+    const res = await request(app)
+      .get('/changelog/')
+    assert.equal(res.status, 200)
+    assert.match(res.headers['content-type'], /^text\/html/)
   })
 
   void it('GET serves a csaf provider-metadata.json', async () => {

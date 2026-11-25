@@ -201,7 +201,7 @@ function configureApp (app: ReturnType<typeof express>, seq: typeof sequelize) {
   }))
 
   /* robots.txt */
-  app.use(robots({ UserAgent: '*', Disallow: '/ftp' }))
+  app.use(robots({ UserAgent: '*', Disallow: ['/ftp', '/changelog/'] }))
 
   /* Create middleware to change paths from the serve-index plugin from absolute to relative */
   const serveIndexMiddleware = (req: Request, res: Response, next: NextFunction) => {
