@@ -1,6 +1,4 @@
 {
-  "2": "2",
-  "3": "3",
   "Apple Juice (1000ml)": "Äppeljuice (1000ml)",
   "The all-time classic.": "Den tidlösa klassikern.",
   "Apple Pomace": "Äppelpressrester",
@@ -93,9 +91,6 @@
   "Sweet & tasty!": "Söt och god!",
   "Woodruff Syrup \"Forest Master X-Treme\"": "Myskmadresirap \"Forest Master X-Treme\"",
   "Harvested and manufactured in the Black Forest, Germany. Can cause hyperactive behavior in children. Can cause permanent green tongue when consumed undiluted.": "Skördad och tillverkad i Schwarzwald i Tyskland. Kan orsaka hyperaktivt beteende hos barn. Kan ge permanent grön tunga om den dricks outspädd.",
-  "The developers probably used some kind of tool to automate their cloud deployment.": "Utvecklarna använde troligen något slags verktyg för att automatisera molndistributionen.",
-  "Try common directory names that popular deployment automation tools use by convention.": "Prova vanliga katalognamn som populära verktyg för distributionsautomatisering använder enligt konvention.",
-  "Some infrastructure file accessible from the web application contains sensitive information that can be used to forge authentication tokens.": "Någon infrastrukturfil som är åtkomlig från webbprogrammet innehåller känslig information som kan användas för att förfalska autentiseringstoken.",
   "Your eldest siblings middle name?": "Vilket är ditt äldsta syskons mellannamn?",
   "Mother's maiden name?": "Vad är din mors flicknamn?",
   "Mother's birth date? (MM/DD/YY)": "Vilket är din mors födelsedatum? (MM/DD/ÅÅ)",
@@ -149,13 +144,5 @@
   "Get your <a href=\"https://20thanniversary.owasp.org/\" target=\"_blank\">free 🎫 for OWASP 20th Anniversary Celebration</a> online conference! Hear from world renowned keynotes and special speakers, network with your peers and interact with our event sponsors. With an anticipated 10k+ attendees from around the world, you will not want to miss this live on-line event!": "Skaffa din <a href=\"https://20thanniversary.owasp.org/\" target=\"_blank\">kostnadsfria 🎫 till OWASP:s 20-årsjubileum</a>, en nätkonferens! Lyssna på världsberömda huvudtalare och särskilda gäster, nätverka med andra deltagare och interagera med evenemangets sponsorer. Med förväntade 10 000+ deltagare från hela världen vill du inte missa detta direktsända nätevenemang!",
   "DSOMM & Juice Shop User Day Ticket": "Biljett till DSOMM & Juice Shop User Day",
   "You are going to the OWASP Global AppSec San Francisco 2024? <a href=\"https://www.eventbrite.com/e/owasp-global-appsec-san-francisco-2024-tickets-723699172707\" target=\"_blank\">Get a ticket<sup>*</sup></a> for this amazing side event as well! Check the juice-packed agenda <a href=\"https://owasp.org/www-project-juice-shop/#div-userday2024\" target=\"_blank\">here</a> for all the details!<br><br><small><small><sup>*</sup>=scroll down to <strong>Elevate: DSOMM and Juice Shop User Day (Sept. 25)</strong> after clicking <em>Get Tickets</em> on Eventbrite. Ticket price set to only covers fees for room, AV, and catering throughout the day.</small></small>": "Ska du till OWASP Global AppSec San Francisco 2024? <a href=\"https://www.eventbrite.com/e/owasp-global-appsec-san-francisco-2024-tickets-723699172707\" target=\"_blank\">Skaffa en biljett<sup>*</sup></a> även till detta fantastiska sidoevenemang! Se det juicefyllda programmet <a href=\"https://owasp.org/www-project-juice-shop/#div-userday2024\" target=\"_blank\">här</a> för alla detaljer!<br><br><small><small><sup>*</sup>=rulla ned till <strong>Elevate: DSOMM and Juice Shop User Day (Sept. 25)</strong> efter att du har klickat på <em>Get Tickets</em> på Eventbrite. Biljettpriset täcker endast kostnaderna för lokal, AV-utrustning och förtäring under dagen.</small></small>",
-  "While not necessarily as trivial to research via a user's LinkedIn profile, the question is still easy to research or brute force when answered truthfully.": "Även om svaret inte nödvändigtvis är lika enkelt att hitta via en användares LinkedIn-profil är frågan fortfarande lätt att undersöka eller råstyrka när den besvaras sanningsenligt.",
-  "When answered truthfully, all security questions are susceptible to online research (on Facebook, LinkedIn etc.) and often even brute force. If at all, they should not be used as the only factor for a security-relevant function.": "När de besvaras sanningsenligt kan alla säkerhetsfrågor undersökas på nätet (på Facebook, LinkedIn osv.) och ofta även råstyrkas. Om de alls används bör de inte vara den enda faktorn för en säkerhetsrelevant funktion.",
-  "Do you remember the security question that Jim used for his account?": "Kommer du ihåg vilken säkerhetsfråga Jim använde för sitt konto?",
-  "Try to identify any variables in the code that might contain arbitrary user input.": "Försök identifiera variabler i koden som kan innehålla godtycklig användarindata.",
-  "Follow the user input through the function call and try to spot places where it might be abused for malicious purposes.": "Följ användarindatan genom funktionsanropet och försök upptäcka platser där den kan missbrukas i skadligt syfte.",
-  "Can you spot a place where a SQL query is being cobbled together in an unsafe way?": "Kan du hitta en plats där en SQL-fråga fogas samman på ett osäkert sätt?",
-  "Line {{vulnLine}} is responsible for this vulnerability or security flaw. Select it and submit to proceed.": "Rad {{vulnLine}} är ansvarig för denna sårbarhet eller säkerhetsbrist. Markera den och skicka in för att fortsätta.",
-  "Invalid email/password cannot be empty": "Ogiltig e-postadress/lösenord får inte vara tomt",
-  "<a href=\"https://owasp.slack.com\" target=\"_blank\">More...</a>": "<a href=\"https://owasp.slack.com\" target=\"_blank\">Mer …</a>"
+  "Invalid email/password cannot be empty": "Ogiltig e-postadress/lösenord får inte vara tomt"
 }

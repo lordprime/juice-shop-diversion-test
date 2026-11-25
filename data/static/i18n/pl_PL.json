@@ -1,6 +1,4 @@
 {
-  "2": "2",
-  "3": "3",
   "Apple Juice (1000ml)": "Sok jabłkowy (1000ml)",
   "The all-time classic.": "Klasyka wszech czasów.",
   "Apple Pomace": "Wytłoczyny jabłkowe",
@@ -93,9 +91,6 @@
   "Sweet & tasty!": "Słodki i smaczny!",
   "Woodruff Syrup \"Forest Master X-Treme\"": " Syrop marzankowy \"Forest Master X-Treme\"",
   "Harvested and manufactured in the Black Forest, Germany. Can cause hyperactive behavior in children. Can cause permanent green tongue when consumed undiluted.": "Zbierane i produkowane w Czarnym lesie w Niemczech. Może powodować nadpobudliwe zachowania u dzieci. Może powodować trwały zielony język po spożyciu nierozcieńczonego.",
-  "The developers probably used some kind of tool to automate their cloud deployment.": "The developers probably used some kind of tool to automate their cloud deployment.",
-  "Try common directory names that popular deployment automation tools use by convention.": "Try common directory names that popular deployment automation tools use by convention.",
-  "Some infrastructure file accessible from the web application contains sensitive information that can be used to forge authentication tokens.": "Some infrastructure file accessible from the web application contains sensitive information that can be used to forge authentication tokens.",
   "Your eldest siblings middle name?": "Drugie imię twojego najstarszego rodzeństwa?",
   "Mother's maiden name?": "Nazwisko panieńskie matki?",
   "Mother's birth date? (MM/DD/YY)": "Data urodzenia matki? (MM/DD/RR)",
@@ -149,13 +144,5 @@
   "Get your <a href=\"https://20thanniversary.owasp.org/\" target=\"_blank\">free 🎫 for OWASP 20th Anniversary Celebration</a> online conference! Hear from world renowned keynotes and special speakers, network with your peers and interact with our event sponsors. With an anticipated 10k+ attendees from around the world, you will not want to miss this live on-line event!": "Odbierz swój <a href=\"https://20thanniversary.owasp.org/\" target=\"_blank\">bezpłatny 🎫 na konferencję online z okazji 20-lecia OWASP</a>! Posłuchaj światowej sławy prelegentów i gości specjalnych, nawiąż kontakty z branżą i wejdź w interakcję ze sponsorami wydarzenia. Przy przewidywanej liczbie ponad 10 tysięcy uczestników z całego świata, nie możesz przegapić tego wydarzenia na żywo!",
   "DSOMM & Juice Shop User Day Ticket": "Wejściówka użytkownika DSOMM & Juice Shop",
   "You are going to the OWASP Global AppSec San Francisco 2024? <a href=\"https://www.eventbrite.com/e/owasp-global-appsec-san-francisco-2024-tickets-723699172707\" target=\"_blank\">Get a ticket<sup>*</sup></a> for this amazing side event as well! Check the juice-packed agenda <a href=\"https://owasp.org/www-project-juice-shop/#div-userday2024\" target=\"_blank\">here</a> for all the details!<br><br><small><small><sup>*</sup>=scroll down to <strong>Elevate: DSOMM and Juice Shop User Day (Sept. 25)</strong> after clicking <em>Get Tickets</em> on Eventbrite. Ticket price set to only covers fees for room, AV, and catering throughout the day.</small></small>": "Wybierasz się na OWASP Global AppSec San Francisco 2024? <a href=\"https://www.eventbrite.com/e/owasp-global-appsec-san-francisco-2024-tickets-723699172707\" target=\"_blank\">Zdobądź bilet<sup>*</sup></a> również na to niesamowite wydarzenie towarzyszące! Sprawdź program <a href=\"https://owasp.org/www-project-juice-shop/#div-userday2024\" target=\"_blank\">tutaj</a>, aby uzyskać wszystkie szczegóły! <br><br><small><small><sup>*</sup>=przewiń stronę w dół do sekcji<strong>Elevate: DSOMM and Juice Shop User Day (25 września)</strong> po kliknięciu <em>Get Tickets</em> na Eventbrite. Cena biletu ustalona, obejmuje tylko opłaty za pokój, AV i całodniowe wyżywienie.</small></small>",
-  "While not necessarily as trivial to research via a user's LinkedIn profile, the question is still easy to research or brute force when answered truthfully.": "Choć znalezienie odpowiedzi na to pytanie na profilu użytkownika w serwisie LinkedIn nie musi być trywialne, nadal łatwo je wyśledzić lub złamać metodą brute force, jeśli udzielono na nie prawdziwej odpowiedzi",
-  "When answered truthfully, all security questions are susceptible to online research (on Facebook, LinkedIn etc.) and often even brute force. If at all, they should not be used as the only factor for a security-relevant function.": "W przypadku udzielenia prawidłowych odpowiedzi, wszystkie pytania bezpieczeństwa są podatne na wyszukiwanie w sieci (na Facebooku, LinkedInie itp.), a często nawet na ataki typu brute force. Jeśli w ogóle są stosowane, nie powinny służyć jako jedyny czynnik w funkcjach istotnych dla bezpieczeństwa",
-  "Do you remember the security question that Jim used for his account?": "Czy pamiętasz pytanie bezpieczeństwa, którego Jim użył dla swojego konta?",
-  "Try to identify any variables in the code that might contain arbitrary user input.": "Try to identify any variables in the code that might contain arbitrary user input.",
-  "Follow the user input through the function call and try to spot places where it might be abused for malicious purposes.": "Follow the user input through the function call and try to spot places where it might be abused for malicious purposes.",
-  "Can you spot a place where a SQL query is being cobbled together in an unsafe way?": "Can you spot a place where a SQL query is being cobbled together in an unsafe way?",
-  "Line {{vulnLine}} is responsible for this vulnerability or security flaw. Select it and submit to proceed.": "Line {{vulnLine}} is responsible for this vulnerability or security flaw. Select it and submit to proceed.",
-  "Invalid email/password cannot be empty": "Invalid email/password cannot be empty",
-  "<a href=\"https://owasp.slack.com\" target=\"_blank\">More...</a>": "<a href=\"https://owasp.slack.com\" target=\"_blank\">More...</a>"
+  "Invalid email/password cannot be empty": "Invalid email/password cannot be empty"
 }

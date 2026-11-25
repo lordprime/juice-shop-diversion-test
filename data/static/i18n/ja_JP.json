@@ -1,6 +1,4 @@
 {
-  "2": "2",
-  "3": "3",
   "Apple Juice (1000ml)": "アップルジュース (1000ml)",
   "The all-time classic.": "永遠の定番",
   "Apple Pomace": "Apple Pomace",
@@ -93,9 +91,6 @@
   "Sweet & tasty!": "甘くておいしい！",
   "Woodruff Syrup \"Forest Master X-Treme\"": "ウッドラフシロップ \"Forest Master X-Treme\"",
   "Harvested and manufactured in the Black Forest, Germany. Can cause hyperactive behavior in children. Can cause permanent green tongue when consumed undiluted.": "ドイツのシュヴァルツヴァルト（黒い森）地方で収穫・製造。お子様に過度な行動を引き起こす場合があります。希釈せずに飲用すると舌が永続的に緑色になる恐れがあります。",
-  "The developers probably used some kind of tool to automate their cloud deployment.": "開発者はクラウド構築の自動化ツールを使用した可能性があります。",
-  "Try common directory names that popular deployment automation tools use by convention.": "広く使われているデプロイ自動化ツールが慣例として使用する、代表的なディレクトリ名を試してみてください。",
-  "Some infrastructure file accessible from the web application contains sensitive information that can be used to forge authentication tokens.": "Webアプリケーションからアクセス可能なインフラ構成ファイルに、認証トークンの偽造に悪用できる機密情報が含まれています。",
   "Your eldest siblings middle name?": "ご兄弟の一番上の方のミドルネームは？",
   "Mother's maiden name?": "お母さんの旧姓は？",
   "Mother's birth date? (MM/DD/YY)": "お母さんの生年月日は？(MM/DD/YY)",
@@ -149,13 +144,5 @@
   "Get your <a href=\"https://20thanniversary.owasp.org/\" target=\"_blank\">free 🎫 for OWASP 20th Anniversary Celebration</a> online conference! Hear from world renowned keynotes and special speakers, network with your peers and interact with our event sponsors. With an anticipated 10k+ attendees from around the world, you will not want to miss this live on-line event!": "<a href=\"https://20thanniversary.owasp.org/\" target=\"_blank\">OWASP 20周年記念オンラインカンファレンス</a> の無料チケット🎫を今すぐ入手！世界的に著名な基調講演者や特別講演者から学び、同業者と交流し、イベントスポンサーと意見交換ができます。世界中から1万人以上の参加が見込まれる、このライブオンラインイベントを見逃す手はありません！",
   "DSOMM & Juice Shop User Day Ticket": "DSOMM & Juice Shop ユーザーデイチケット",
   "You are going to the OWASP Global AppSec San Francisco 2024? <a href=\"https://www.eventbrite.com/e/owasp-global-appsec-san-francisco-2024-tickets-723699172707\" target=\"_blank\">Get a ticket<sup>*</sup></a> for this amazing side event as well! Check the juice-packed agenda <a href=\"https://owasp.org/www-project-juice-shop/#div-userday2024\" target=\"_blank\">here</a> for all the details!<br><br><small><small><sup>*</sup>=scroll down to <strong>Elevate: DSOMM and Juice Shop User Day (Sept. 25)</strong> after clicking <em>Get Tickets</em> on Eventbrite. Ticket price set to only covers fees for room, AV, and catering throughout the day.</small></small>": "OWASP Global AppSec San Francisco 2024 に参加されますか？この素晴らしいサイドイベントの<a href=\"https://www.eventbrite.com/e/owasp-global-appsec-san-francisco-2024-tickets-723699172707\" target=\"_blank\">チケットも入手しましょう<sup>*</sup></a>！充実したアジェンダの詳細は<a href=\"https://owasp.org/www-project-juice-shop/#div-userday2024\" target=\"_blank\">こちら</a>でご確認ください！<br><br><small><small><sup>*</sup>=Eventbriteで<em>Get Tickets</em>をクリック後、<strong>Elevate: DSOMM and Juice Shop User Day (Sept. 25)</strong>までスクロールしてください。チケット料金は、会場費、AV機器、終日のケータリング費用のみに充てられます。</small></small>",
-  "While not necessarily as trivial to research via a user's LinkedIn profile, the question is still easy to research or brute force when answered truthfully.": "ユーザーのLinkedInプロフィールから簡単に特定できるほど単純ではないとしても、セキュリティ質問に正直に回答した場合、推測やブルートフォース攻撃で破るのは容易です。",
-  "When answered truthfully, all security questions are susceptible to online research (on Facebook, LinkedIn etc.) and often even brute force. If at all, they should not be used as the only factor for a security-relevant function.": "正直に答えた場合、すべてのセキュリティ質問は (FacebookやLinkedInなどの) オンライン上での情報収集によって特定可能であり、多くの場合ブルートフォース攻撃でも突破可能です。仮に使用する場合でも、セキュリティ関連機能の唯一の認証要素として使用すべきではありません。",
-  "Do you remember the security question that Jim used for his account?": "Jimのアカウントに使用されたセキュリティ質問を覚えていますか？",
-  "Try to identify any variables in the code that might contain arbitrary user input.": "コード内で、任意のユーザー入力が含まれる可能性のある変数を特定してみてください。",
-  "Follow the user input through the function call and try to spot places where it might be abused for malicious purposes.": "関数呼び出しに沿ってユーザー入力を追跡し、悪意のある目的で悪用される可能性がある箇所を特定してみてください。",
-  "Can you spot a place where a SQL query is being cobbled together in an unsafe way?": "SQLクエリが安全でない方法で組み立てられている箇所を特定できますか？",
-  "Line {{vulnLine}} is responsible for this vulnerability or security flaw. Select it and submit to proceed.": "{{vulnLine}} 行目がこの脆弱性またはセキュリティ上の欠陥の原因です。該当する行を選択して送信し、次に進んでください。",
-  "Invalid email/password cannot be empty": "メールアドレスまたはパスワードを空にすることはできません。",
-  "<a href=\"https://owasp.slack.com\" target=\"_blank\">More...</a>": "<a href=\"https://owasp.slack.com\" target=\"_blank\">詳細はこちら…</a>"
+  "Invalid email/password cannot be empty": "メールアドレスまたはパスワードを空にすることはできません。"
 }
