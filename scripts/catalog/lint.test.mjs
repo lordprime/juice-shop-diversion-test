@@ -82,14 +82,33 @@ describe('ContentLinter', () => {
     const allowed = [{ file: 'i18n/it_IT.json', excerpt: 'ai', why: 'Italian preposition' }]
     const listed = new ContentLinter(RULES, allowed)
     it('accepts the listed text in the listed file, in any case', () => {
-      assert.deepEqual(listed.checkText('Vai ai prodotti. Ai saldi!', 'frontend/i18n/it_IT.json.KEY'), [])
+      assert.deepEqual(listed.checkJson({ KEY: 'Vai ai prodotti. Ai saldi!' }, 'frontend/i18n/it_IT.json'), [])
     })
     it('still flags the same text in another file', () => {
-      assert.equal(listed.checkText('ai', 'frontend/i18n/fr_FR.json.KEY').length, 1)
+      assert.equal(listed.checkJson({ KEY: 'ai' }, 'frontend/i18n/fr_FR.json').length, 1)
     })
     it('still flags other text in the listed file, also after an allowed match', () => {
-      const rules = listed.checkText('ai prodotti, then an agent', 'i18n/it_IT.json.KEY').map(f => f.excerpt)
+      const rules = listed.checkJson({ KEY: 'ai prodotti, then an agent' }, 'i18n/it_IT.json').map(f => f.excerpt)
       assert.deepEqual(rules, ['agent'])
+    })
+    it('matches the listed file by its whole name, not as a piece of another path', () => {
+      for (const file of [
+        'frontend/i18n/xit_IT.json', // a longer file name ending the same way
+        'frontend/i18n/it_IT.jsonp', // a longer extension
+        'frontend/i18n/it_IT.json.d/fr.json', // a folder named like the file
+        'copy-of-i18n/it_IT.json', // a folder ending the same way
+        'i18n/it_IT', // a shorter name
+        '' // no file at all
+      ]) {
+        assert.equal(listed.checkJson({ KEY: 'ai' }, file).length, 1, file)
+      }
+      for (const file of ['i18n/it_IT.json', 'frontend\\i18n\\it_IT.json', '/opt/shop/frontend/i18n/it_IT.json']) {
+        assert.deepEqual(listed.checkJson({ KEY: 'ai', list: ['ai'] }, file), [], file)
+      }
+    })
+    it('checks a key-path location against the file, not the key', () => {
+      // a key named like the listed file does not make another file listed
+      assert.equal(listed.checkJson({ 'i18n/it_IT.json': 'ai' }, 'fr_FR.json').length, 1)
     })
     it('finds every match, not only the first', () => {
       assert.equal(linter.checkText('agent one, agent two', 'x').length, 2)

@@ -66,15 +66,17 @@ export const RULES = Object.freeze([
 ])
 
 export class ContentLinter {
-  // allowed: [{ file, excerpt, why }], file matched as a path suffix and excerpt
-  // compared without regard to case.
+  // allowed: [{ file, excerpt, why }]. An entry applies to the file whose path is
+  // exactly `file` or ends in `/file` (whole names only), and to that excerpt in
+  // any case.
   constructor (rules = RULES, allowed = []) {
     this.rules = rules
     this.allowed = allowed
   }
 
   // Every flagged sentence part in one piece of text, except allowed ones.
-  checkText (text, location) {
+  // `location` says where in the file the text sits; `file` is the file itself.
+  checkText (text, location, file = location) {
     if (typeof text !== 'string') {
       throw new TypeError(`${location}: expected text, got ${typeof text}`)
     }
@@ -82,7 +84,7 @@ export class ContentLinter {
     for (const rule of this.rules) {
       const global = new RegExp(rule.pattern.source, rule.pattern.flags.includes('g') ? rule.pattern.flags : rule.pattern.flags + 'g')
       for (const match of text.matchAll(global)) {
-        if (!this.isAllowed(location, match[0])) {
+        if (!this.isAllowed(file, match[0])) {
           findings.push({ location, rule: rule.name, excerpt: match[0] })
         }
       }
@@ -90,24 +92,25 @@ export class ContentLinter {
     return findings
   }
 
-  isAllowed (location, excerpt) {
-    const where = location.replaceAll('\\', '/')
+  isAllowed (file, excerpt) {
+    const where = file.replaceAll('\\', '/')
     return this.allowed.some(entry =>
-      where.includes(entry.file) && entry.excerpt.toLowerCase() === excerpt.toLowerCase())
+      (where === entry.file || where.endsWith('/' + entry.file)) &&
+      entry.excerpt.toLowerCase() === excerpt.toLowerCase())
   }
 
   // Every string anywhere in a parsed JSON value, keys included.
-  checkJson (value, location) {
+  checkJson (value, location, file = location) {
     if (typeof value === 'string') {
-      return this.checkText(value, location)
+      return this.checkText(value, location, file)
     }
     if (Array.isArray(value)) {
-      return value.flatMap((item, index) => this.checkJson(item, `${location}[${index}]`))
+      return value.flatMap((item, index) => this.checkJson(item, `${location}[${index}]`, file))
     }
     if (value !== null && typeof value === 'object') {
       return Object.entries(value).flatMap(([key, item]) => [
-        ...this.checkText(key, `${location}.${key} (key)`),
-        ...this.checkJson(item, `${location}.${key}`)
+        ...this.checkText(key, `${location}.${key} (key)`, file),
+        ...this.checkJson(item, `${location}.${key}`, file)
       ])
     }
     return []
